@@ -16,6 +16,7 @@ import UserDetail from './components/UserDetail'
 import Appbar from './components/Appbar'
 import Home from './components/Home'
 import Participantinfoform from './components/ParticipantInfoForm'
+import Deck1 from './tarot-components/Deck1'
 
 const url = 'http://localhost:3001/api'
 
@@ -132,7 +133,10 @@ const App = () => {
               url={url}
             />
           </>
-        } /> 
+        } />
+        <Route path='/deck1' element={
+            <Deck1 />
+        } />
 
         <Route path="/cancel" element={
           <>

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import axios from 'axios'
 import { useSearchParams } from 'react-router-dom'
+import TarotHome from '../tarot-components/TarotHome'
 
 const Home = ({ message, setMessage, url }) => {
   // επρεπε να γίνει γιατι καλούσε το success 2 φορες δημιουργώντας 2 transactions
@@ -49,15 +50,18 @@ const Home = ({ message, setMessage, url }) => {
         </div>
       )}
 
-      <h1>Donate APP</h1>
-      <p>stripe + login app</p>
+      <h1>Biased Tarot</h1>
+      <p>revisited</p>
+
+      <TarotHome />
+
       <p className="text-center text-secondary small">to create an admin has to be done through backend with postman.
         post http://localhost:3000/api/admin
         {`{
           "username": "newadmin",
           "name": "New Admin",
           "email": "newadmin@example.com",
-          "password": "password123",
+          "password": "password123", 
           "roles": ["admin"] 
         }`}
         </p>
