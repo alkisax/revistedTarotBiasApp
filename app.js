@@ -9,6 +9,7 @@ const participantRoutes = require('./routes/participant.routes')
 const transactionRoutes = require('./routes/transaction.routes')
 const stripeRoutes = require('./routes/stripe.routes')
 const emailRoutes = require('./routes/email.routes')
+const tarotRoutes = require('./routes/tarot.routes');
 
 // const path = require('path'); // requires explanation. added for rendering front page subpages
 
@@ -37,6 +38,7 @@ app.use('/api/participant', participantRoutes)
 app.use('/api/transaction', transactionRoutes)
 app.use('/api/stripe', stripeRoutes)
 app.use('/api/email', emailRoutes)
+app.use('/api/tarot', tarotRoutes);
 
 app.use(express.static('dist')) 
 

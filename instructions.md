@@ -3735,10 +3735,440 @@ const Home = ({ message, setMessage, url }) => {
     </div>
 </div>
 ```
+---
+# **BIASED TAROT**
+# Biased Tarot backend
+#### .env
+```
+OPENAI_API_KEY=sk***
+```
 
-# mail jest test
-# Cypress test
-# update notes dependencies
+#### app.js
+```js
+const tarotRoutes = require('./routes/tarot.routes');
+
+app.use('/api/tarot', tarotRoutes);
+```
+
+#### query.models.js
+```js
+const mongoose = require('mongoose');
+
+const querySchema = new mongoose.Schema({
+  message: String,
+  bias: String,
+},
+{
+  collection: 'queries',
+  timestamps: true
+});
+
+const Query = mongoose.model('Query', querySchema);
+
+module.exports = Query;
+```
+
+### tarot.service.js
+```js
+// tarot.service.js
+
+// αυτό το σέβις έχει την τράπουλα, την κλήρωση, την μετατροπή των τραβηγμένων σε λεκτικά και την επιλογή της γλώσσας του prompt
+// θα χρειαστώ και τα δυο getTarotReading και gpt_prompt στον controller για να τα στείλω στο getGPTResponse
+
+const majorArcana = [
+  "The Fool",
+  "The Magician",
+  "The High Priestess",
+  "The Empress",
+  "The Emperor",
+  "The Hierophant",
+  "The Lovers",
+  "The Chariot",
+  "Strength",
+  "The Hermit",
+  "Wheel of Fortune",
+  "Justice",
+  "The Hanged Man",
+  "Death",
+  "Temperance",
+  "The Devil",
+  "The Tower",
+  "The Star",
+  "The Moon",
+  "The Sun",
+  "Judgement",
+  "The World"
+];
+const wands = [
+  "Ace of Wands",
+  "Two of Wands",
+  "Three of Wands",
+  "Four of Wands",
+  "Five of Wands",
+  "Six of Wands",
+  "Seven of Wands",
+  "Eight of Wands",
+  "Nine of Wands",
+  "Ten of Wands",
+  "Page of Wands",
+  "Knight of Wands",
+  "Queen of Wands",
+  "King of Wands"
+];
+const cups = [
+  "Ace of Cups",
+  "Two of Cups",
+  "Three of Cups",
+  "Four of Cups",
+  "Five of Cups",
+  "Six of Cups",
+  "Seven of Cups",
+  "Eight of Cups",
+  "Nine of Cups",
+  "Ten of Cups",
+  "Page of Cups",
+  "Knight of Cups",
+  "Queen of Cups",
+  "King of Cups"
+];
+const swords = [
+  "Ace of Swords",
+  "Two of Swords",
+  "Three of Swords",
+  "Four of Swords",
+  "Five of Swords",
+  "Six of Swords",
+  "Seven of Swords",
+  "Eight of Swords",
+  "Nine of Swords",
+  "Ten of Swords",
+  "Page of Swords",
+  "Knight of Swords",
+  "Queen of Swords",
+  "King of Swords"
+];
+const pentacles = [
+  "Ace of Pentacles",
+  "Two of Pentacles",
+  "Three of Pentacles",
+  "Four of Pentacles",
+  "Five of Pentacles",
+  "Six of Pentacles",
+  "Seven of Pentacles",
+  "Eight of Pentacles",
+  "Nine of Pentacles",
+  "Ten of Pentacles",
+  "Page of Pentacles",
+  "Knight of Pentacles",
+  "Queen of Pentacles",
+  "King of Pentacles"
+];
+
+// κατασκευάζω ένα arr με όλες τις κάρτες ταρώ - ως λεκτικά ονοματα πχ "Ace of Swords", "The Hierophant",
+const tarotDeck = [
+  ...majorArcana,
+  ...cups,
+  ...pentacles,
+  ...swords,
+  ...wands,
+];
+
+// τραβάω έναν τυχαίο αριθμό απο το 0-77 (78 κάρτες) 
+const random = () => {
+  return Math.floor(Math.random() * 78); // 78 to include 77 in the range
+};
+
+// καλέι την random για να τραβήξει τρείς διαφορετικές κάρτες (αρηθμιτικά)
+const draw = () => {
+  const first = random();
+  let second = random();
+  while (second === first) {
+    second = random();
+  }
+
+  let third = random();
+  while (third === first || third === second) {
+    third = random();
+  }
+  return {
+    first: first,
+    second: second,
+    third: third
+  };
+};
+
+
+const drawnCards = () => {
+  // καλεί την draw για να διαλέξει 3 νούμερα απο το 0-77
+  const drawnCards = draw();
+
+  // χρησιμοποιεί τα νούμερα ως index για να βρεί τις κάρτες απο το [] tarotDeck και τις βάζει σε ένα array
+  const selectedCards = [
+    tarotDeck[drawnCards.first],
+    tarotDeck[drawnCards.second],
+    tarotDeck[drawnCards.third]
+  ];
+
+  return {
+    selectedCards
+  };
+};
+
+const gpt_prompt = (lang) => {
+  if (!lang) {
+    lang = 'en' //default to english
+  }
+
+  //φτιάχτο το λεκτικό που θα στείλω στο gpt
+  const tarot_prompt = lang === 'en' 
+    ? "You are a Tarot interpreter. Provide a detailed interpretation of the following Tarot cards in direct response to the question asked."
+    : "Είσαι ερμηνευτής Ταρώ. Παρέχετε μια λεπτομερή ερμηνεία των παρακάτω καρτών Ταρώ σε άμεση απάντηση στην ερώτηση που τέθηκε.";
+
+  return tarot_prompt
+}
+
+module.exports = { 
+  drawnCards,
+  gpt_prompt
+};
+```
+
+#### gpt.service.js
+```js
+// gpt.service.js
+const axios = require('axios');
+
+// αυτο το service παίρνει την ερώτηση του χρήστη, τισ κάρρτες που έχουν τραβηχτεί και το bias και μου επιστρέφει την απάντηση του gpt
+// έχει ότι έχει να κάνει με το gpt api
+
+const getGPTResponse = async (gpt_prompt, userQuestion, drawnCards, bias, apiKey) => {
+
+  // φτιάχνω το πλήρες gpt prompt με την ερωτησή μου, τις κάρτες, και το bias
+  const fullPrompt = `${gpt_prompt} 
+  Question: ${userQuestion} 
+  Drawn Cards: ${drawnCards.join(', ')} 
+  Bias: ${bias || 'None'}`;
+
+  // αυτό είναι το url του gpt api
+  const url = 'https://api.openai.com/v1/chat/completions';
+
+  // κάνω την κλήση μου με μοντέλο 3.5 (θέλει το api key)
+  // η όλλη function μου επιστρέφει μεσο του response.data.choices[0].message.content την απάντηση του gpt
+  
+  try {
+    const response = await axios.post(url, {
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: fullPrompt }],
+    }, {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.data.choices[0].message.content;
+  } catch (error) {
+    throw new Error(`Error fetching GPT response: ${error.message}`);
+  }
+ 
+  // return axios.post(url, {
+  //   model: 'gpt-3.5-turbo',
+  //   messages: [{ role: 'user', content: fullPrompt }],
+  // }, {
+  //   headers: {
+  //     'Authorization': `Bearer ${apiKey}`,
+  //     'Content-Type': 'application/json',
+  //   },
+  // })
+  //   .then(response => response.data.choices[0].message.content)
+  //   .catch(error => {
+  //     throw new Error(`Error fetching GPT response: ${error.message}`);
+  //   });
+};
+
+module.exports = { getGPTResponse };
+```
+
+#### tarot.controller.js
+```js
+// tarot.controller.js
+
+// κάνω import τα σεβισις μου και το μοντέλο μου
+const { drawnCards } = require('../services/tarot.service');
+const { gpt_prompt } = require('../services/tarot.service')
+const { getGPTResponse } = require('../services/gpt.service');
+const Query = require('../models/query.models');
+
+exports.getTarotReading = async (req, res) => {
+
+  const apiKey = process.env.OPENAI_API_KEY
+
+  // παίρνει απο το front γγλώσσ / bias / ερώτηση
+  const lang = req.body.lang || req.query.lang
+  const bias = req.body.bias || req.query.bias
+  let userQuestion = req.body.userQuestion || req.query.userQuestion // δεν θημάμαι αν το front μου το στέλνει ως ulr params ή ως Body. Αλλ έτσι είναι πιο γενικό
+
+  // αν δεν έχει ερώτηση τότε μια γενική ερώτηση
+  if (!userQuestion) {
+    userQuestion = "What do I need to know today?"
+  }
+
+  try {
+    const cards = drawnCards().selectedCards // τραβάει 3 χαρτιά ως λεκτικό // το .selectedCards χρειάζετε γιατι το dranCards επιστρέφει ένα αντικείμενο με το κλειδί selectedCards
+    const prompt = gpt_prompt(lang) // καλέι το γενικό Prompt στη σωστή γλώσσα
+    const gptResponse = await getGPTResponse(prompt, userQuestion, cards, bias, apiKey) // επικοινωνεί με το api
+
+    // μου αποθηκεύει την ερώτηση
+    const query = new Query({
+      message: userQuestion,
+      bias: bias
+    });
+    await query.save();
+
+    res.status(200).json({
+      drawnCards: cards,
+      gptResponse,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+```
+
+#### tarot.routes.js
+```js
+// tarot.routes.js
+
+const express = require('express');
+const tarotController = require('../controllers/tarot.controller');
+
+const router = express.Router();
+
+router.post('/tarot-reading', tarotController.getTarotReading);
+
+module.exports = router;
+```
+
+#### swager docs for tarot routes
+```js
+/**
+ * @swagger
+ * /api/tarot/tarot-reading:
+ *   post:
+ *     summary: Get a Tarot reading and GPT interpretation.
+ *     description: Returns 3 drawn tarot cards and a GPT-based interpretation based on user's question, language, and bias.
+ *     tags:
+ *       - Tarot
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userQuestion:
+ *                 type: string
+ *                 example: "What should I focus on in my career?"
+ *               bias:
+ *                 type: string
+ *                 example: "optimistic"
+ *               lang:
+ *                 type: string
+ *                 example: "en"
+ *     responses:
+ *       200:
+ *         description: Success - Tarot reading and GPT interpretation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 drawnCards:
+ *                   type: object
+ *                   properties:
+ *                     drawnCards:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["The Lovers", "Three of Cups", "The Tower"]
+ *                 gptResponse:
+ *                   type: string
+ *                   example: "The cards suggest a powerful emotional connection..."
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
+ */
+router.post('/tarot-reading', tarotController.getTarotReading);
+```
+
+#### __test___/tarot.test.js
+```js
+const request = require('supertest');
+const mongoose = require('mongoose');
+const Query = require('../models/query.models');
+require('dotenv').config();
+const app = require('../app');
+
+// Mock GPT service
+jest.mock('../services/gpt.service', () => ({
+  getGPTResponse: jest.fn(),
+}));
+
+const { getGPTResponse } = require('../services/gpt.service');
+
+// Prevent saving queries to DB
+jest.mock('../models/query.models', () => {
+  const actualModel = jest.requireActual('../models/query.models');
+  actualModel.prototype.save = jest.fn().mockResolvedValue();
+  return actualModel;
+});
+
+beforeAll(async () => {
+  await mongoose.connect(process.env.MONGODB_TEST_URI);
+});
+
+afterAll(async () => {
+  await Query.deleteMany({});
+  await mongoose.disconnect();
+});
+
+describe("Tarot API", () => {
+  it("should return 3 tarot cards and a mocked GPT interpretation without saving to DB", async () => {
+    getGPTResponse.mockResolvedValue("This is a mocked GPT interpretation.");
+
+    const res = await request(app)
+      .post("/api/tarot/tarot-reading")
+      .send({
+        userQuestion: "What should I focus on in my career?",
+        bias: "optimistic",
+        lang: "en",
+      });
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.drawnCards)).toBe(true);
+    expect(res.body.drawnCards.length).toBe(3);
+    expect(res.body.gptResponse).toBe("This is a mocked GPT interpretation.");
+  });
+});
+```
+
+
+
+
+
+
+
 
 
 

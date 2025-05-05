@@ -38,7 +38,7 @@ const { verifyToken, checkRole } = require('../middlewares/verification.middlewa
  *                   example: false
  *                 error:
  *                   type: string
- *                   example: No token provided
+ *                   example: "No token provided"
  *       500:
  *         description: Internal server error
  *         content:
@@ -51,7 +51,7 @@ const { verifyToken, checkRole } = require('../middlewares/verification.middlewa
  *                   example: false
  *                 error:
  *                   type: string
- *                   example: Internal server error
+ *                   example: "Internal server error"
  */
 router.get ('/', verifyToken, checkRole('admin'), adminController.findAll)
 // router.get ('/', adminController.findAll)
@@ -162,7 +162,7 @@ router.post('/', adminController.create)
  *                   example: false
  *                 error:
  *                   type: string
- *                   example: Error deleting admin: not found
+ *                   example: "Error deleting admin: not found"
  *       500:
  *         description: Server error
  *         content:
