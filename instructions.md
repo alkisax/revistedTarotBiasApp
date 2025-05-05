@@ -4165,6 +4165,593 @@ describe("Tarot API", () => {
 
 # Biased Tarot Frontend
 
+#### App.jsx
+```jsx
+        <Route path='/deck1' element={
+            <Deck1 />
+        } />
+```
+
+#### Home.jsx
+```jsx
+      <TarotHome />
+```
+
+#### TarotHome.jsx
+```jsx
+import { useState, useEffect } from "react";
+import CardImages from "./CardImages";
+import axios from "axios";
+import Question from "./Question";
+import Settings from "./Settings"
+import Language from "./Language"
+
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link, useNavigate
+} from 'react-router-dom'
+
+const TarotHome = () => {
+  const [ gptResponse, setGptResponse ] = useState("");
+  const [ loading, setLoading ] = useState(false);
+  const [ error, setError ] = useState("");
+  const [ selectedCards, setSelectedCards ] = useState([]);
+  const [ drawnCards, setDrawnCards ] = useState([]);
+  const [ newQuestion, setNewQuestion ] = useState('')
+  const [ question, setQuestion ] = useState('')
+  const [ bias, setBias ] = useState('');
+  const [ lang, setLang ] = useState('en')
+
+  const tarotUrl = "http://localhost:3001/api/tarot/tarot-reading"
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const fetchTarotReading = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.post(`${tarotUrl}`, {
+          userQuestion: question,
+          bias: bias,
+          lang: lang,
+        });
+  
+        setDrawnCards(response.data.drawnCards);
+        setSelectedCards(response.data.selectedCards);
+        console.log("from initial useffect selected cards", selectedCards);
+        setGptResponse(response.data.gptResponse);
+        setError(""); // Clear previous errors
+      } catch (error) {
+        console.error("Error fetching response:", error);
+        setError("Failed to fetch Tarot reading.");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchTarotReading();
+  }, [question, bias, lang]);
+
+  useEffect(() => {
+    if (drawnCards.length > 0) {
+      // This effect will run whenever `drawnCards` is updated
+      console.log("drawnCards", drawnCards);
+      console.log("selectedCards", selectedCards);
+    }
+  }, [drawnCards, selectedCards]);
+
+  // Function to map card indices to image paths
+  // const mapCardToImage = (cardIndex) => {
+  //   return `/deck1/${cardIndex}.jpg`; // Path to the image using the card index
+  // };
+  const mapCardToImage = (cardName) => {
+    const cardNameToIndex = {
+      "The Fool": 0,
+      "The Magician": 1,
+      "The High Priestess": 2,
+      "The Empress": 3,
+      "The Emperor": 4,
+      "The Hierophant": 5,
+      "The Lovers": 6,
+      "The Chariot": 7,
+      "Strength": 8,
+      "The Hermit": 9,
+      "Wheel of Fortune": 10,
+      "Justice": 11,
+      "The Hanged Man": 12,
+      "Death": 13,
+      "Temperance": 14,
+      "The Devil": 15,
+      "The Tower": 16,
+      "The Star": 17,
+      "The Moon": 18,
+      "The Sun": 19,
+      "Judgement": 20,
+      "The World": 21,
+      "Ace of Cups": 22,
+      "Two of Cups": 23,
+      "Three of Cups": 24,
+      "Four of Cups": 25,
+      "Five of Cups": 26,
+      "Six of Cups": 27,
+      "Seven of Cups": 28,
+      "Eight of Cups": 29,
+      "Nine of Cups": 30,
+      "Ten of Cups": 31,
+      "Page of Cups": 32,
+      "Knight of Cups": 33,
+      "Queen of Cups": 34,
+      "King of Cups": 35,
+      "Ace of Pentacles": 36,
+      "Two of Pentacles": 37,
+      "Three of Pentacles": 38,
+      "Four of Pentacles": 39,
+      "Five of Pentacles": 40,
+      "Six of Pentacles": 41,
+      "Seven of Pentacles": 42,
+      "Eight of Pentacles": 43,
+      "Nine of Pentacles": 44,
+      "Ten of Pentacles": 45,
+      "Page of Pentacles": 46,
+      "Knight of Pentacles": 47,
+      "Queen of Pentacles": 48,
+      "King of Pentacles": 49,
+      "Ace of Swords": 50,
+      "Two of Swords": 51,
+      "Three of Swords": 52,
+      "Four of Swords": 53,
+      "Five of Swords": 54,
+      "Six of Swords": 55,
+      "Seven of Swords": 56,
+      "Eight of Swords": 57,
+      "Nine of Swords": 58,
+      "Ten of Swords": 59,
+      "Page of Swords": 60,
+      "Knight of Swords": 61,
+      "Queen of Swords": 62,
+      "King of Swords": 63,
+      "Ace of Wands": 64,
+      "Two of Wands": 65,
+      "Three of Wands": 66,
+      "Four of Wands": 67,
+      "Five of Wands": 68,
+      "Six of Wands": 69,
+      "Seven of Wands": 70,
+      "Eight of Wands": 71,
+      "Nine of Wands": 72,
+      "Ten of Wands": 73,
+      "Page of Wands": 74,
+      "Knight of Wands": 75,
+      "Queen of Wands": 76,
+      "King of Wands": 77,
+    };
+  
+    const index = cardNameToIndex[cardName];
+    return index !== undefined
+      ? `/deck1/${index}.jpg`
+      : '/deck1/default.jpg'; // fallback image
+  };
+  
+
+  const parseResponse = () => {
+    const cleanResponse = gptResponse.replace(/<\/?pre>/g, ""); // Remove <pre> and </pre> tags
+    return cleanResponse.split("\n").map((line, index) => (
+      <p key={index}>{line}</p>
+    ));
+  };
+
+  const reschafle = () => {
+    window.location.reload();
+  };
+
+  const handleQuestionChange = (event) => {
+    // console.log(event.target.value)
+    setNewQuestion(event.target.value)
+  }
+
+  const handleShowDeck = () => {
+    navigate('/deck1')
+  }
+
+  const addquestion = (event) => {
+    event.preventDefault()
+    setLoading(true)
+    setQuestion(newQuestion)
+    setNewQuestion('')
+  }
+
+  return (
+    <div className="min-vh-100 d-flex justify-content-center align-items-center bg-dark text-white">
+
+      <div className="container d-flex flex-column justify-content-center align-items-center py-4">
+
+        <div>
+            <Language lang={lang} setLang={setLang} />
+        </div>
+
+
+        <div className="d-flex justify-content-center row">
+          <div className="text-center mb-4 col-4 d-flex align-items-stretch">
+            <Link to="/deck1">
+              <button onClick={handleShowDeck} className="btn btn-light">Show Deck</button>
+            </Link>
+          </div>
+          <div className="col-1"></div>
+          <div className="text-center mb-4 col-4 d-flex align-items-stretch">
+            <button onClick={reschafle} className="btn btn-light ml-3">Reshuffle</button>
+          </div>
+        </div>
+
+        <div className="viewDeck {}" id="viewDeck" >
+        </div>
+
+        <div className="viewQuestion" id="viewQuestion" >
+          <Question newQuestion={newQuestion} handleQuestionChange={handleQuestionChange} addquestion={addquestion} />
+    
+        <div>
+          <h1 className="mb-4">Tarot Reading</h1>
+          {loading ? (
+            <p>Loading...</p> // Display loading message only while waiting for response
+          ) : error ? (
+            <p style={{ color: "red" }}>{error}</p> // Display error message
+          ) : question ? ( 
+            // Only show results if a question has been submitted
+            <div>
+              <CardImages drawnCards={drawnCards} mapCardToImage={mapCardToImage} />
+              <div>{parseResponse()}</div>
+            </div>
+          ) : (
+            <br />
+          )} {/* Show nothing if no question has been submitted */}
+        </div>
+
+        </div>
+
+        <div>
+          <Settings setBias={setBias} />
+
+          {bias && (
+            <p>Selected Bias: {bias}</p>
+          )}
+
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+export default TarotHome
+```
+
+#### Language.jsx
+```jsx
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { useState } from "react";
+
+const Language = ({ lang, setLang }) => {
+  const [ selectedLang, setSelectedLang ] = useState(lang)
+
+  const handleLangChange = (event) => {
+    const value = event.target.value;
+    setSelectedLang(value); 
+    if (value === 'gr') {
+      setLang('gr');
+    } else {
+      setLang('el');
+    } 
+  };
+
+  return (
+    <div className="mb-3 d-flex justify-content-lg-start">
+      <div className="form-check form-check-inline" >
+        <input
+          type="radio"
+          id="en"
+          name="lang"
+          value="en"
+          onChange={handleLangChange}
+          checked={selectedLang === 'en'}
+        />
+        <label htmlFor="en" className="form-check-label"><img src="/images/small_Flag_of_Liberia.png" style={{ height: '1em', marginRight: '8px' }} />english </label>
+      </div>
+
+      <div className="form-check form-check-inline" >
+        <input
+          type="radio"
+          id="gr"
+          name="lang"
+          value="gr"
+          onChange={handleLangChange}
+          checked={selectedLang === 'gr'}
+        />
+        <label htmlFor="gr" className="form-check-label"><img src="/images/small_Cretan_State.png" style={{ height: '1em', marginRight: '8px' }} />greek</label>
+      </div> 
+    </div>
+  )
+}
+export default Language
+```
+
+#### Question.jsx
+```jsx
+import 'bootstrap/dist/css/bootstrap.min.css';
+const Question = ({ newQuestion, handleQuestionChange, addquestion }) => {
+  return (
+    <div className="mb-4">
+      <h4 className="mb-3">Ask a Question:</h4>
+      <form onSubmit={addquestion} className="d-flex align-items-center">
+        <input
+          type="text"
+          value={newQuestion}
+          onChange={handleQuestionChange}
+          className="form-control me-2" // Adds padding and some margin
+          placeholder="Type your question here"
+        />
+        <button type="submit" className="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  );
+};
+
+export default Question;
+```
+
+#### CardImages.jsx
+```jsx
+import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is imported
+
+const TarotCard = ({ position, cardName, mapCardToImage }) => (
+  <div className="col-3 text-center">
+    <h5>{position} Card</h5>
+    <img
+      src={mapCardToImage(cardName)}  // Pass the card name to mapCardToImage
+      alt={`Card ${position}`}
+      className="img-fluid rounded"
+    />
+    <p>{cardName}</p> {/* Optional: show card name below */}
+  </div>
+);
+
+const CardImages = ({ drawnCards, mapCardToImage }) => {
+  if (!drawnCards || drawnCards.length < 3) {
+    return <p>Error: Not enough cards drawn.</p>;
+  }
+
+  return (
+    <div className="container mt-4">
+      <h2 className="text-center mb-4">Drawn Tarot Cards</h2>
+      <div className="row justify-content-center">
+        <TarotCard position="First" cardName={drawnCards[0]} mapCardToImage={mapCardToImage} />
+        <TarotCard position="Second" cardName={drawnCards[1]} mapCardToImage={mapCardToImage} />
+        <TarotCard position="Third" cardName={drawnCards[2]} mapCardToImage={mapCardToImage} />
+      </div>
+    </div>
+  );
+};
+
+export default CardImages;
+```
+
+#### Settings.jsx
+```jsx
+import 'bootstrap/dist/css/bootstrap.min.css';
+import InnerSettings from "./InnerSettings";
+import { useState } from "react";
+
+const Settings = ({ setBias }) => {
+  const password = 'settings'
+  const [ newPasword, setNewPassword] = useState('')
+  const [ isPassed, setIsPassed ] = useState(false)
+
+  const handlePassChange = (event) => {
+    console.log(event.target.value)
+    setNewPassword(event.target.value)
+  }
+  const checkPass = (event) => {
+    event.preventDefault()
+    if (newPasword === password) {
+      setIsPassed(true)
+    }
+    setNewPassword('')
+  }
+
+  return(
+    <div>
+      {isPassed ? (
+        <div>
+          <InnerSettings setBias={setBias} />
+        </div>
+      ) : (
+        <div className="mb-3">
+          <h4 className="mb-2" style={{ fontSize: '0.7rem' }}>Password for settings:</h4>
+          <form onSubmit={checkPass} className="d-flex align-items-center">
+            <input
+              type="text"
+              value={newPasword}
+              onChange={handlePassChange}
+              className="form-control me-1 p-1" // More reduced padding and margin
+              placeholder="Enter settings password"
+              style={{ fontSize: '0.65rem' }} // Smaller input text
+            />
+            <button type="submit" className="btn btn-primary" style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}>Submit</button> 
+          </form>
+        </div>
+      )}
+
+    </div>
+  )
+}
+
+export default Settings
+```
+
+#### InnerSettings.jsx
+```jsx
+import { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const InnerSettings = ({ setBias }) => {
+  const [newBias, setNewBias] = useState('the answer will include the topic');
+  const [selectedBias, setSelectedBias] = useState('');
+
+  const handleBiasChange = (event) => {
+    const value = event.target.value;
+    setSelectedBias(value); // Track selected radio button
+
+    if (value === 'good') {
+      setBias('the answer will give ONLY good and optimistic results');
+    } else if (value === 'bad') {
+      setBias('the answer will give ONLY bad and pessimistic results');
+    } else if (value === 'custom') {
+      setBias(''); // Reset bias when custom is selected
+    } else if (value === 'neutral') {
+      setBias('')
+    }
+  };
+
+  const handleCustomBiasChange = (event) => {
+    setNewBias(event.target.value);
+  };
+
+  const handleSubmitCustomBias = (event) => {
+    event.preventDefault();
+    // Submit the custom bias with the prefix only once
+    setBias(`the answer will include the topic: ${newBias.replace(/^the answer will include the topic\s*/, '')}`);
+  };
+
+  return (
+    <div>
+      <h3>Settings</h3>
+      <div>
+        <h4>Set Bias</h4>
+        <div className="form-check form-check-inline">
+          <input
+            type="radio"
+            id="good"
+            name="bias"
+            value="good"
+            className="form-check-input"
+            onChange={handleBiasChange}
+            checked={selectedBias === 'good'}
+          />
+          <label htmlFor="good" className="form-check-label">G</label>
+        </div>
+
+        <div className="form-check form-check-inline">
+          <input
+            type="radio"
+            id="bad"
+            name="bias"
+            value="bad"
+            className="form-check-input"
+            onChange={handleBiasChange}
+            checked={selectedBias === 'bad'}
+          />
+          <label htmlFor="bad" className="form-check-label">B</label>
+        </div>
+
+        <div className="form-check form-check-inline">
+          <input
+            type="radio"
+            id="neutral"
+            name="bias"
+            value="neutral"
+            className="form-check-input"
+            onChange={handleBiasChange}
+            checked={selectedBias === 'neutral'}
+          />
+          <label htmlFor="neutral" className="form-check-label">Neutral</label>
+        </div>
+
+        <div className="form-check form-check-inline">
+          <input
+            type="radio"
+            id="custom"
+            name="bias"
+            value="custom"
+            className="form-check-input"
+            onChange={handleBiasChange}
+            checked={selectedBias === 'custom'}
+          />
+          <label htmlFor="custom" className="form-check-label">Custom</label>
+        </div>
+
+        {/* Only show the custom input when the "custom" option is selected */}
+        {selectedBias === 'custom' && (
+          <div>
+            <textarea
+              type="text"
+              value={newBias}
+              onChange={handleCustomBiasChange}
+              className="form-control mt-2"
+              placeholder="Type custom bias"
+              rows={3}
+            />
+            <button
+              onClick={handleSubmitCustomBias}
+              className="btn btn-primary mt-2"
+            >
+              Submit Custom Bias
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default InnerSettings;
+```
+
+#### Deck1.jsx
+```jsx
+import { Link } from 'react-router-dom';
+
+// Function to map card index to image path
+const mapCardToImage = (cardIndex) => {
+  return `/deck1/${cardIndex}.jpg`; // Path to the image using the card index
+};
+
+const Deck1btn = () => {
+  return (
+    <div>
+      <h1>Deck1 Page</h1>
+      <Link to="/">
+        <button>Go to Home</button>
+      </Link>
+    </div>
+  );
+};
+
+const Deck1 = () => {
+  const imageCount = 78; // Update this to the number of images you have in the /deck1 folder
+
+  // Generate an array with card indices from 0 to imageCount-1
+  const cardIndexes = Array.from({ length: imageCount }, (_, index) => index);
+
+  return (
+    <div>
+      <h1>This is the Deck1 Page</h1>
+      <Deck1btn />
+      
+      <div className="image-gallery">
+        {cardIndexes.map((index) => (
+          <img
+            key={index}
+            src={mapCardToImage(index)}
+            alt={`Card ${index}`}
+            style={{ width: '100px', margin: '5px' }} // You can adjust the styling
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Deck1;
+```
 
 
 

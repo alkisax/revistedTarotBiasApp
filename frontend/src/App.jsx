@@ -134,6 +134,7 @@ const App = () => {
             />
           </>
         } />
+        
         <Route path='/deck1' element={
             <Deck1 />
         } />

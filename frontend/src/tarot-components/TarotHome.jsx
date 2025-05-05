@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import CardImages from "./CardImages";
+import axios from "axios";
 import Question from "./Question";
 import Settings from "./Settings"
 import Language from "./Language"
@@ -15,7 +15,7 @@ const TarotHome = () => {
   const [ loading, setLoading ] = useState(false);
   const [ error, setError ] = useState("");
   const [ selectedCards, setSelectedCards ] = useState([]);
-  const [ drawnCards, setDrawnCards ] = useState({ first: null, second: null,third: null });
+  const [ drawnCards, setDrawnCards ] = useState([]);
   const [ newQuestion, setNewQuestion ] = useState('')
   const [ question, setQuestion ] = useState('')
   const [ bias, setBias ] = useState('');
@@ -37,6 +37,7 @@ const TarotHome = () => {
   
         setDrawnCards(response.data.drawnCards);
         setSelectedCards(response.data.selectedCards);
+        console.log("from initial useffect selected cards", selectedCards);
         setGptResponse(response.data.gptResponse);
         setError(""); // Clear previous errors
       } catch (error) {
@@ -59,9 +60,97 @@ const TarotHome = () => {
   }, [drawnCards, selectedCards]);
 
   // Function to map card indices to image paths
-  const mapCardToImage = (cardIndex) => {
-    return `/deck1/${cardIndex}.jpg`; // Path to the image using the card index
+  // const mapCardToImage = (cardIndex) => {
+  //   return `/deck1/${cardIndex}.jpg`; // Path to the image using the card index
+  // };
+  const mapCardToImage = (cardName) => {
+    const cardNameToIndex = {
+      "The Fool": 0,
+      "The Magician": 1,
+      "The High Priestess": 2,
+      "The Empress": 3,
+      "The Emperor": 4,
+      "The Hierophant": 5,
+      "The Lovers": 6,
+      "The Chariot": 7,
+      "Strength": 8,
+      "The Hermit": 9,
+      "Wheel of Fortune": 10,
+      "Justice": 11,
+      "The Hanged Man": 12,
+      "Death": 13,
+      "Temperance": 14,
+      "The Devil": 15,
+      "The Tower": 16,
+      "The Star": 17,
+      "The Moon": 18,
+      "The Sun": 19,
+      "Judgement": 20,
+      "The World": 21,
+      "Ace of Cups": 22,
+      "Two of Cups": 23,
+      "Three of Cups": 24,
+      "Four of Cups": 25,
+      "Five of Cups": 26,
+      "Six of Cups": 27,
+      "Seven of Cups": 28,
+      "Eight of Cups": 29,
+      "Nine of Cups": 30,
+      "Ten of Cups": 31,
+      "Page of Cups": 32,
+      "Knight of Cups": 33,
+      "Queen of Cups": 34,
+      "King of Cups": 35,
+      "Ace of Pentacles": 36,
+      "Two of Pentacles": 37,
+      "Three of Pentacles": 38,
+      "Four of Pentacles": 39,
+      "Five of Pentacles": 40,
+      "Six of Pentacles": 41,
+      "Seven of Pentacles": 42,
+      "Eight of Pentacles": 43,
+      "Nine of Pentacles": 44,
+      "Ten of Pentacles": 45,
+      "Page of Pentacles": 46,
+      "Knight of Pentacles": 47,
+      "Queen of Pentacles": 48,
+      "King of Pentacles": 49,
+      "Ace of Swords": 50,
+      "Two of Swords": 51,
+      "Three of Swords": 52,
+      "Four of Swords": 53,
+      "Five of Swords": 54,
+      "Six of Swords": 55,
+      "Seven of Swords": 56,
+      "Eight of Swords": 57,
+      "Nine of Swords": 58,
+      "Ten of Swords": 59,
+      "Page of Swords": 60,
+      "Knight of Swords": 61,
+      "Queen of Swords": 62,
+      "King of Swords": 63,
+      "Ace of Wands": 64,
+      "Two of Wands": 65,
+      "Three of Wands": 66,
+      "Four of Wands": 67,
+      "Five of Wands": 68,
+      "Six of Wands": 69,
+      "Seven of Wands": 70,
+      "Eight of Wands": 71,
+      "Nine of Wands": 72,
+      "Ten of Wands": 73,
+      "Page of Wands": 74,
+      "Knight of Wands": 75,
+      "Queen of Wands": 76,
+      "King of Wands": 77,
+    };
+  
+    const index = cardNameToIndex[cardName];
+    return index !== undefined
+      ? `/deck1/${index}.jpg`
+      : '/deck1/default.jpg'; // fallback image
   };
+  
 
   const parseResponse = () => {
     const cleanResponse = gptResponse.replace(/<\/?pre>/g, ""); // Remove <pre> and </pre> tags
@@ -75,7 +164,7 @@ const TarotHome = () => {
   };
 
   const handleQuestionChange = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     setNewQuestion(event.target.value)
   }
 
