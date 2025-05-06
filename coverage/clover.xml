@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1746513231265" clover="3.2.0">
-  <project timestamp="1746513231266" name="All files">
+<coverage generated="1746514455347" clover="3.2.0">
+  <project timestamp="1746514455347" name="All files">
     <metrics statements="539" coveredstatements="405" conditionals="89" coveredconditionals="47" methods="52" coveredmethods="40" elements="680" coveredelements="492" complexity="0" loc="539" ncloc="539" packages="8" files="29" classes="29"/>
     <package name="revistedTarotBiasApp">
       <metrics statements="36" coveredstatements="36" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>

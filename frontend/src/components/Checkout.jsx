@@ -10,9 +10,12 @@ import { useSearchParams } from 'react-router-dom'
 
 const PUBLIC_STRIPE_KEY = 'pk_live_51REuM3EsaPshQGwVZxSzQyBw2SJj4CnnSxuf6yWokbg5dRVAM0WpDFrIHnlF0sqQgykl4WVxCw5gA6bhDHWeyrFE00muoS3dkU'
 const BACKEND_URL = 'http://localhost:3001';
-const PRICE_ID_050 = 'price_1RGPe4EsaPshQGwV6vXbMrhE'
-const PRICE_ID_051 = 'price_1RGkyMEsaPshQGwV7rsnw60y'
-const PRICE_ID_052 = 'price_1RGlWzEsaPshQGwVGwpZ9TSb'
+const PRICE_ID_050 = 'price_1RGPe4EsaPshQGwV6vXbMrhE' // 0,5 ευρω
+const PRICE_ID_1E = 'price_1RLfbEEsaPshQGwV2HETNB56' // 1 ευρώ
+const PRICE_ID_2E = 'price_1RLfg9EsaPshQGwVxwhsXPnL' // 2 ευρώ
+
+// const PRICE_ID_051 = 'price_1RGkyMEsaPshQGwV7rsnw60y'// 0,51 ευρω
+// const PRICE_ID_052 = 'price_1RGlWzEsaPshQGwVGwpZ9TSb' // 0,52 ευρω
 
 const stripePromise = loadStripe(`${PUBLIC_STRIPE_KEY}`)
 
@@ -76,9 +79,9 @@ const Checkout = () => {
           <div className="card border border-white p-3 h-100">
             <img src={twoCoins} className="card-img-top" alt="Donate 0.51€" />
             <div className="card-body text-center">
-              <h5 className="card-title">Donate 0.51€</h5>
+              <h5 className="card-title">Donate 1€</h5>
               <p className="card-text">Slightly more generous 😄</p>
-              <button className="btn btn-success" onClick={() => handleCheckout(PRICE_ID_051)}>Donate 0.51€</button>
+              <button className="btn btn-success" onClick={() => handleCheckout(PRICE_ID_1E)}>Donate 1€</button>
             </div>
           </div>
         </div>
@@ -88,9 +91,9 @@ const Checkout = () => {
           <div className="card border border-white p-3 h-100">
             <img src={threeCoins} className="card-img-top" alt="Donate 0.52€" />
             <div className="card-body text-center">
-              <h5 className="card-title">Donate 0.52€</h5>
+              <h5 className="card-title">Donate 2€</h5>
               <p className="card-text">Wow, you're a hero! 💪</p>
-              <button className="btn btn-warning" onClick={() => handleCheckout(PRICE_ID_052)}>Donate 0.52€</button>
+              <button className="btn btn-warning" onClick={() => handleCheckout(PRICE_ID_2E)}>Donate 2€</button>
             </div>
           </div>
         </div>

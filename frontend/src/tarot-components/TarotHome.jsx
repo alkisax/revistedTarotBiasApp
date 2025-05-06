@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import CardImages from "./CardImages";
+import CardImages from "./CardImagesTemp";
 import axios from "axios";
 import Question from "./Question";
 import Settings from "./Settings"
@@ -183,6 +184,11 @@ const TarotHome = () => {
     <div className="min-vh-100 d-flex justify-content-center align-items-center bg-dark text-white">
 
       <div className="container d-flex flex-column justify-content-center align-items-center py-4">
+
+        <img src="../../public/images/banner.png" alt="banner" className="img-fluid w-50" />
+
+        <p className="w-50">“When I am furious about something, I sometimes beat the ground or a tree with my walking stick. But I certainly do not believe that the ground is to blame or that my beating can help anything... And all rites are of this kind.”
+        ― Ludwig Wittgenstein, Remarks on Frazer's Golden Bough</p>
 
         <div>
             <Language lang={lang} setLang={setLang} />
