@@ -44,7 +44,7 @@ app.use(express.static('dist'))
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.get('/*', (req, res, next) => {
+app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) {
     return next(); // let the API routes handle it
   }
