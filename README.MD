@@ -1,4 +1,4 @@
-# Biased Tarot Application
+# 🔮🔮 Biased Tarot Application
 
 This project is a full-stack application built using the **MERN stack** (MongoDB, Express, React, Node.js). It combines Tarot card readings powered by GPT, secure login functionality, and donation management.
 
@@ -6,6 +6,7 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
 📖 **Full development guide:** [instructions.md](https://github.com/alkisax/revistedTarotBiasApp/blob/main/instructions.md)  
 **github rep** [github](https://github.com/alkisax/revistedTarotBiasApp/tree/main)
 **App screenshots** [screenshots](https://github.com/alkisax/revistedTarotBiasApp/tree/main/appScreenshots)
+**README** [README](https://github.com/alkisax/revistedTarotBiasApp/blob/main/README.MD)
 
 - for dev testing resons you can use:
  - admin username: "alkisax", password: "123"
@@ -62,9 +63,6 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
 - **React**: Frontend library for building user interfaces.
 - **Bootstrap**: CSS framework for responsive design.
 - **React Router**: For routing and navigation.
-
----
-## screenshots
 
 ---
 
