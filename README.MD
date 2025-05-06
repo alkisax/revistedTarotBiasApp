@@ -70,7 +70,7 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo.git
+   git clone git@github.com:alkisax/revistedTarotBiasApp.git
    cd your-repo
 2. Install dependencies for both backend and frontend:
     ```
@@ -85,12 +85,19 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
   * Create a .env file in the root directory with the following:
   ```
   MONGODB_URI=your_mongodb_connection_string
+  MONGODB_TEST_URI=your_mongo_test_uri
+  SECRET=your_secret
   JWT_SECRET=your_jwt_secret
   OPENAI_API_KEY=your_openai_api_key
+  STRIPE_SECRET_KEY=youR_stripe_key
   GOOGLE_CLIENT_ID=your_google_client_id
   GOOGLE_CLIENT_SECRET=your_google_client_secret
+  REDIRECT_URI=your_google_redirect_uri
   EMAIL_USER=your_email
   EMAIL_PASS=your_email_password
+  APP_URL=http://localhost:3001
+  FRONTEND_URL=http://localhost:5173
+  BACKEND_URL=http://localhost:3001
   ```
 4. Start the application:
   ```
