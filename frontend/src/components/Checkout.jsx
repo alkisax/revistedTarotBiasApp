@@ -9,7 +9,8 @@ import threeCoins from '../assets/three_coins.svg.png'
 import { useSearchParams } from 'react-router-dom'
 
 const PUBLIC_STRIPE_KEY = 'pk_live_51REuM3EsaPshQGwVZxSzQyBw2SJj4CnnSxuf6yWokbg5dRVAM0WpDFrIHnlF0sqQgykl4WVxCw5gA6bhDHWeyrFE00muoS3dkU'
-const BACKEND_URL = 'http://localhost:3001';
+// const BACKEND_URL = 'http://localhost:3001';
+const BACKEND_URL = 'https://revistedtarotbiasapp.onrender.com';
 const PRICE_ID_050 = 'price_1RGPe4EsaPshQGwV6vXbMrhE' // 0,5 ευρω
 const PRICE_ID_1E = 'price_1RLfbEEsaPshQGwV2HETNB56' // 1 ευρώ
 const PRICE_ID_2E = 'price_1RLfg9EsaPshQGwVxwhsXPnL' // 2 ευρώ
