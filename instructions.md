@@ -225,6 +225,7 @@ npm install --save-dev vite
 ```
 
 #### .env
+**Στo deploy ολα τα URLs αλλάξανε**
 ```
 MONGODB_URI = mongodb+srv://alkisax:{***}@cluster0.8ioq6.mongodb.net/combined?retryWrites=true&w=majority&appName=Cluster0
 MONGODB_TEST_URI = mongodb+srv://alkisax:{***}@cluster0.8ioq6.mongodb.net/combined_TEST?retryWrites=true&w=majority&appName=Cluster0
@@ -303,11 +304,15 @@ app.use('/api/admin', adminRoutes)
 // για να σερβίρει τον φακελο dist του front μετα το npm run build
 app.use(express.static('dist'))
 
-// αυτό ειναι κάτι που ίσως μου χρειαστεί στο deploy
+// αυτό ειναι κάτι που ίσως μου χρειαστεί στο deploy // τελικά έβγαζε προβλήματα και χρησιμοποιήθηκε το επόμενο
 // app.get('/*', (req, res, next) => {
 //   if (req.path.startsWith('/api')) {
 //     return next(); // let the API routes handle it
 //   }
+//αυτο
+app.get(/^\/(?!api|api-docs).*/, (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
 
 //   res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 // });
@@ -4192,6 +4197,8 @@ import {
   Routes, Route, Link, useNavigate
 } from 'react-router-dom'
 
+import banner from '../assets/banner.png';
+
 const TarotHome = () => {
   const [ gptResponse, setGptResponse ] = useState("");
   const [ loading, setLoading ] = useState(false);
@@ -4365,6 +4372,12 @@ const TarotHome = () => {
     <div className="min-vh-100 d-flex justify-content-center align-items-center bg-dark text-white">
 
       <div className="container d-flex flex-column justify-content-center align-items-center py-4">
+
+        // τις εικόνες πρέεπει να τις κάνεις ιμπορτ
+        <img src={banner} alt="banner" className="img-fluid w-50" />
+
+        <p className="w-50">“When I am furious about something, I sometimes beat the ground or a tree with my walking stick. But I certainly do not believe that the ground is to blame or that my beating can help anything... And all rites are of this kind.”
+        ― Ludwig Wittgenstein, Remarks on Frazer's Golden Bough</p>
 
         <div>
             <Language lang={lang} setLang={setLang} />

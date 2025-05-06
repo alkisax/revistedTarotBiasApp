@@ -23,6 +23,8 @@ const createCheckoutSession = async (req, res) => {
 // test url http://localhost:5173//api/stripe/success?success=true&session_id=cs_live_a1mkTS6fqvKZOmhtC9av3fmJoVGLpTae5WARcA3vclGPqs1CgNUzRxm5iu
 // test url http://localhost:5173/success?success=true&session_id=cs_live_a1n8TEyTBIrIsdg1taD0a2TjB5QaiCWTWSlGF6sslVeqXSnQgykb9yHDyp
 // test url http://localhost:5173/success?success=true&session_id=cs_live_a16HqUdBc0VjlzlhfxfzMCDML6jYuvKoSXYusUdEwcTOO3RKCuperj2RB7
+// deployed payment Eva Ntaliani alkisax@zohomail.eu
+// https://revistedtarotbiasapp.onrender.com/success?success=true&session_id=cs_live_a18fcYxUMoQTz0x2vKDz1tBokiUjYrh3IQ6AkWCQ4sP4IfEwgSDa1kqYaN
 const handleSuccess = async (req, res) => {
   try {
     // συλλέγω διάφορα δεδομένα του χρήστη απο το url του success
