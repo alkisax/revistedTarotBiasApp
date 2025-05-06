@@ -122,7 +122,7 @@ router.post('/', adminController.create)
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the admin to delete
+ *         description: "The ID of the admin to delete"
  *     responses:
  *       200:
  *         description: Admin deleted successfully
@@ -136,7 +136,7 @@ router.post('/', adminController.create)
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Admin admin123 deleted successfully
+ *                   example: "Admin admin123 deleted successfully"
  *       400:
  *         description: Missing or invalid ID
  *         content:
@@ -149,7 +149,7 @@ router.post('/', adminController.create)
  *                   example: false
  *                 error:
  *                   type: string
- *                   example: Admin ID is required OR not found
+ *                   example: "Admin ID is required OR not found"
  *       404:
  *         description: Admin not found
  *         content:

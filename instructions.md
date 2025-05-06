@@ -125,6 +125,7 @@ npm install --save-dev eslint-plugin-jest
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "cross-env NODE_ENV=test jest --coverage --testTimeout=50000 --runInBand",
     "dev": "node --watch server.js"
   },
