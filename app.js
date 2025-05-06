@@ -11,7 +11,7 @@ const stripeRoutes = require('./routes/stripe.routes')
 const emailRoutes = require('./routes/email.routes')
 const tarotRoutes = require('./routes/tarot.routes');
 
-// const path = require('path'); // requires explanation. added for rendering front page subpages
+const path = require('path'); // requires explanation. added for rendering front page subpages
 
 const app = express()
 
