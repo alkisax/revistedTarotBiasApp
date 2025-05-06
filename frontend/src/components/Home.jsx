@@ -56,7 +56,7 @@ const Home = ({ message, setMessage, url }) => {
       <TarotHome />
 
       <p className="text-center text-secondary small">to create an admin has to be done through backend with postman.
-        post http://localhost:3000/api/admin
+        post revistedtarotbiasapp.onrender.com/api/admin
         {`{
           "username": "newadmin",
           "name": "New Admin",

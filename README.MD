@@ -107,13 +107,15 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
   # Frontend
   cd frontend
   npm run dev
-5. N.B. to run localy you have to change urls to local!!
   ```
+5. N.B. to run localy you have to change urls to local!!
+
 ## Usage
 - Tarot Card Readings
   1. Navigate to the Tarot reading page.
   2. Draw three cards and receive a GPT-powered interpretation.
   3. Use the settings to apply a bias to the reading.
+- buy me a coffee feature using Stripe Checkout
 - Admin Panel
   1. Log in as an admin to access the admin panel.
   2. View, add, or delete donators.
