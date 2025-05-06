@@ -11,7 +11,7 @@ const stripeRoutes = require('./routes/stripe.routes')
 const emailRoutes = require('./routes/email.routes')
 const tarotRoutes = require('./routes/tarot.routes');
 
-// const path = require('path'); // requires explanation. added for rendering front page subpages
+const path = require('path'); // requires explanation. added for rendering front page subpages
 
 const app = express()
 
@@ -44,12 +44,12 @@ app.use(express.static('dist'))
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// app.get('/*', (req, res, next) => {
-//   if (req.path.startsWith('/api')) {
-//     return next(); // let the API routes handle it
-//   }
+app.get('/*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next(); // let the API routes handle it
+  }
 
-//   res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-// });
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
 
 module.exports = app
