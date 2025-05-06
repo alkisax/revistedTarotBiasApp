@@ -5,6 +5,11 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
 ### The app is live at **[Biased Tarot Revisited](https://revistedtarotbiasapp.onrender.com)**  
 📖 **Full development guide:** [instructions.md](https://github.com/alkisax/revistedTarotBiasApp/blob/main/instructions.md)  
 **github rep** [github](https://github.com/alkisax/revistedTarotBiasApp/tree/main)
+**App screenshots** [screenshots](https://github.com/alkisax/revistedTarotBiasApp/tree/main/appScreenshots)
+
+- for dev testing resons you can use:
+ - admin username: "alkisax", password: "123"
+ - settings password: "settings"
 ---
 
 ## Features
@@ -97,6 +102,7 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
   # Frontend
   cd frontend
   npm run dev
+5. N.B. to run localy you have to change urls to local!!
   ```
 ## Usage
 - Tarot Card Readings
