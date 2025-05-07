@@ -14,23 +14,29 @@ const { verifyToken } = require('../middlewares/verification.middleware');
  *     tags: [Queries]
  *     security:
  *       - bearerAuth: []  
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - question
- *               - bias
- *               - response
- *             properties:
- *               question:
- *                 type: string
- *               bias:
- *                 type: string
- *               response:
- *                 type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - question
+ *              - bias
+ *              - response
+ *              - user
+ *            properties:
+ *              question:
+ *                type: string
+ *              bias:
+ *                type: string
+ *              response:
+ *                type: string
+ *              important:
+ *                type: boolean
+ *              user:
+ *                type: string
+ *                description: ObjectId of the user
  *     responses:
  *       201:
  *         description: Query created successfully

@@ -5,14 +5,14 @@ const queryDAO = require('../daos/query.dao');
 // Create a new query
 exports.createQuery = async (req, res) => {
   const { question, bias, response } = req.body;
-  const userId = req.user._id; // να προσέξω στο front πως στέλνει το Id
+  const user = req.user._id; // να προσέξω στο front πως στέλνει το Id
 
   try {
     const newQuery = await queryDAO.createQuery({
       question,
       bias,
       response,
-      userId
+      user
     });
     res.status(201).json({
       message: 'Query created successfully',
