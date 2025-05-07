@@ -11,6 +11,11 @@ const getUserById = async (userId) => {
   return await User.findById(userId).populate('query'); // populate queries if needed
 };
 
+// Find user by username
+const findUserByUsername = async (username) => {
+  return await User.findOne({ username });
+};
+
 // Update user by ID
 const updateUser = async (userId, updateData) => {
   return await User.findByIdAndUpdate(userId, updateData, { new: true });
@@ -25,5 +30,6 @@ module.exports = {
   createUser,
   getUserById,
   updateUser,
+  findUserByUsername,
   deleteUser
 };

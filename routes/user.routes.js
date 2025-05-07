@@ -23,11 +23,11 @@ const userController = require('../controllers/user.controller');
  *             type: object
  *             required:
  *               - username
- *               - hashedPassword
+ *               - password
  *             properties:
  *               username:
  *                 type: string
- *               hashedPassword:
+ *               password:
  *                 type: string
  *               roles:
  *                 type: array

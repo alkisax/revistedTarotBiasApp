@@ -1,10 +1,19 @@
+const bcrypt = require('bcrypt')
 const userDAO = require('../daos/user.dao');
 
 // Create a new user
 exports.createUser = async (req, res) => {
   try {
     const userData = req.body;
-    const newUser = await userDAO.createUser(userData);
+    
+    const SaltOrRounds = 10
+    const hashedPassword = await bcrypt.hash(userData.password, SaltOrRounds)
+    const userToSave = {
+      ...userData,
+      hashedPassword,
+    };
+
+    const newUser = await userDAO.createUser(userToSave);
     res.status(201).json({
       message: 'User created successfully',
       user: newUser,

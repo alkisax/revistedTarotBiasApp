@@ -13,30 +13,26 @@ const { verifyToken } = require('../middlewares/verification.middleware');
  *     description: Creates a new query based on the provided question, bias, and response.
  *     tags: [Queries]
  *     security:
- *       - bearerAuth: []  
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            required:
- *              - question
- *              - bias
- *              - response
- *              - user
- *            properties:
- *              question:
- *                type: string
- *              bias:
- *                type: string
- *              response:
- *                type: string
- *              important:
- *                type: boolean
- *              user:
- *                type: string
- *                description: ObjectId of the user
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - question
+ *               - bias
+ *               - response
+ *             properties:
+ *               question:
+ *                 type: string
+ *               bias:
+ *                 type: string
+ *               response:
+ *                 type: string
+ *               important:
+ *                 type: boolean
  *     responses:
  *       201:
  *         description: Query created successfully

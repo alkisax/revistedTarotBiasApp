@@ -12,6 +12,7 @@ const emailRoutes = require('./routes/email.routes')
 const tarotRoutes = require('./routes/tarot.routes')
 const queryRoutes = require('./routes/query.routes');
 const userRoutes = require('./routes/user.routes');
+const userAuthRoutes = require('./routes/userAuth.routes')
 
 const path = require('path'); // requires explanation. added for rendering front page subpages
 
@@ -35,6 +36,7 @@ app.use('/api/email', emailRoutes)
 app.use('/api/tarot', tarotRoutes)
 app.use('/api/query', queryRoutes)
 app.use('/api/user', userRoutes);
+app.use('/api/userAuth', userAuthRoutes)
 
 app.use(express.static('dist')) 
 
