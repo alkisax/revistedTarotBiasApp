@@ -6,7 +6,7 @@ const queryController = require('../controllers/query.controller')
 
 /**
  * @swagger
- * /api/queries:
+ * /api/query:
  *   post:
  *     summary: Create a new query
  *     description: Creates a new query based on the provided question, bias, and response.
@@ -47,7 +47,7 @@ router.post('/', queryController.createQuery);
 
 /**
  * @swagger
- * /api/queries/{userId}:
+ * /api/query/{userId}:
  *   get:
  *     summary: Get all queries by user ID
  *     description: Retrieves all queries for a specific user by their user ID.
@@ -75,7 +75,7 @@ router.get('/:userId', queryController.getAllQueriesByUser);
 
 /**
  * @swagger
- * /api/queries/{queryId}/important:
+ * /api/query/{queryId}/important:
  *   patch:
  *     summary: Toggle the important status of a query
  *     description: Toggles the "important" flag of a specific query.
@@ -108,7 +108,7 @@ router.patch('/:queryId/important', queryController.toggleImportant);
 
 /**
  * @swagger
- * /api/queries/{queryId}:
+ * /api/query/{queryId}:
  *   delete:
  *     summary: Delete a query by ID
  *     description: Deletes a query by its ID.
