@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const queryController = require('../controllers/query.controller')
+const { verifyToken } = require('../middlewares/verification.middleware');
 
 /**
  * @swagger
@@ -11,6 +12,8 @@ const queryController = require('../controllers/query.controller')
  *     summary: Create a new query
  *     description: Creates a new query based on the provided question, bias, and response.
  *     tags: [Queries]
+ *     security:
+ *       - bearerAuth: []  
  *     requestBody:
  *       required: true
  *       content:
@@ -43,7 +46,7 @@ const queryController = require('../controllers/query.controller')
  *       500:
  *         description: Internal server error
  */
-router.post('/', queryController.createQuery);
+router.post('/', verifyToken, queryController.createQuery); //verifyToken should be checked if admin specific
 
 /**
  * @swagger
@@ -52,6 +55,8 @@ router.post('/', queryController.createQuery);
  *     summary: Get all queries by user ID
  *     description: Retrieves all queries for a specific user by their user ID.
  *     tags: [Queries]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userId
@@ -71,7 +76,7 @@ router.post('/', queryController.createQuery);
  *       500:
  *         description: Internal server error
  */
-router.get('/:userId', queryController.getAllQueriesByUser);
+router.get('/:userId', verifyToken, queryController.getAllQueriesByUser);
 
 /**
  * @swagger
@@ -80,6 +85,8 @@ router.get('/:userId', queryController.getAllQueriesByUser);
  *     summary: Toggle the important status of a query
  *     description: Toggles the "important" flag of a specific query.
  *     tags: [Queries]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: queryId
@@ -104,7 +111,7 @@ router.get('/:userId', queryController.getAllQueriesByUser);
  *       500:
  *         description: Internal server error
  */
-router.patch('/:queryId/important', queryController.toggleImportant);
+router.patch('/:queryId/important', verifyToken, queryController.toggleImportant);
 
 /**
  * @swagger
@@ -113,6 +120,8 @@ router.patch('/:queryId/important', queryController.toggleImportant);
  *     summary: Delete a query by ID
  *     description: Deletes a query by its ID.
  *     tags: [Queries]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: queryId
@@ -128,6 +137,6 @@ router.patch('/:queryId/important', queryController.toggleImportant);
  *       500:
  *         description: Internal server error
  */
-router.delete('/:queryId', queryController.deleteQuery);
+router.delete('/:queryId', verifyToken, queryController.deleteQuery);
 
 module.exports = router;
