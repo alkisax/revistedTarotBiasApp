@@ -4767,8 +4767,19 @@ const Deck1 = () => {
 export default Deck1;
 ```
 
-# runs on 
+# runs on https://revistedtarotbiasapp.onrender.com
 
+## *correction* dont save "what do i need to know today"
+#### tarot.controller.js
+```js
+catch (error) {
+    console.error("Failed to save query:", error);
+  }
+```
+
+# add a user sign up / sign in για να δείξω ξεκάθαρα μια CRUD λειτουργεία
+
+- swagger models add
 
 
 

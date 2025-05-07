@@ -2,6 +2,8 @@ const m2s = require('mongoose-to-swagger');
 const Admin = require('./models/admins.models');
 const Participant = require('./models/participant.models')
 const Transaction = require('./models/transaction.models')
+const User = require('./models/user.models')
+const Query = require('./models/query.models')
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const options = {
@@ -17,6 +19,8 @@ const options = {
         Admin: m2s(Admin),
         Participant: m2s(Participant),
         Transaction: m2s(Transaction),
+        User: m2s(User),
+        Query: m2s(Query)
       },
       securitySchemes: {
         bearerAuth: {

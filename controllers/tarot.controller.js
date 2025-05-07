@@ -4,6 +4,7 @@
 const { drawnCards } = require('../services/tarot.service');
 const { gpt_prompt } = require('../services/tarot.service')
 const { getGPTResponse } = require('../services/gpt.service');
+const queryDAO = require('../daos/query.dao')
 const Query = require('../models/query.models');
 
 exports.getTarotReading = async (req, res) => {
@@ -25,12 +26,23 @@ exports.getTarotReading = async (req, res) => {
     const prompt = gpt_prompt(lang) // καλέι το γενικό Prompt στη σωστή γλώσσα
     const gptResponse = await getGPTResponse(prompt, userQuestion, cards, bias, apiKey) // επικοινωνεί με το api
 
-    // μου αποθηκεύει την ερώτηση
-    const query = new Query({
-      message: userQuestion,
-      bias: bias
-    });
-    await query.save();
+    const gptResponseLastParagraph = gptResponse
+      .trim()
+      .split(/\n{2,}/) // splits by double line breaks (typical paragraph separators)
+      .filter(p => p.trim().length > 0) // remove empty paragraphs
+      .pop(); // gets the last paragraph
+
+    const userId = req.user._id // αυτό πρέπει να το προσέξουμε στο front
+
+    // μου αποθηκεύει την ερώτηση (Μόνο αν δεν είναι η προκατασκευασμένη)
+    if (userQuestion !== "What do I need to know today?" && userId) {
+      await queryDAO.createQuery({
+        question: userQuestion, 
+        bias: bias,
+        response: gptResponseLastParagraph,
+        userId: userId
+      });
+    } 
 
     res.status(200).json({
       drawnCards: cards,
