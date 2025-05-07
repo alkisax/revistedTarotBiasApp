@@ -10,6 +10,11 @@ const userSchema = new Schema({
     type: String,
     required: [true, 'password is required'],
   },
+  roles:{
+    type: [String],
+    default: ['user'],
+    immutable: true
+  },
   query: [{
     type: mongoose.Schema.Types.ObjectId, // Each item here is an ObjectId pointing to a Query document
     ref: 'Query' // This tells Mongoose *which* collection/model to link (the 'Queries' model)

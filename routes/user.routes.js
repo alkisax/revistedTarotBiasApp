@@ -29,6 +29,12 @@ const userController = require('../controllers/user.controller');
  *                 type: string
  *               hashedPassword:
  *                 type: string
+ *               roles:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 default: ["user"]
+ *                 readOnly: true
  *     responses:
  *       201:
  *         description: User created successfully
@@ -84,6 +90,12 @@ router.get('/:userId', userController.getUserById);
  *                 type: string
  *               hashedPassword:
  *                 type: string
+ *               roles:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 readOnly: true
+ *                 description: Immutable. Cannot be updated.
  *     responses:
  *       200:
  *         description: User updated successfully
