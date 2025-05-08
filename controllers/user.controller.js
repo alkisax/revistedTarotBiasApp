@@ -45,6 +45,13 @@ exports.updateUser = async (req, res) => {
   const updateData = req.body;
 
   try {
+    if (updateData.password) {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(updateData.password, saltRounds);
+      updateData.hashedPassword = hashedPassword;
+      delete updateData.password; // Remove plain password
+    }
+
     const updatedUser = await userDAO.updateUser(userId, updateData);
     if (!updatedUser) {
       return res.status(404).json({ error: 'User not found' });

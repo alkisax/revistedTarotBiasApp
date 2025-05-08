@@ -1,4 +1,5 @@
 const User = require('../models/user.models');
+const Query = require('../models/query.models'); // βάζω και του query γιατι πρέπει να κανω Push το νεο query στον user
 
 // Create a new user
 const createUser = async (userData) => {
@@ -26,10 +27,25 @@ const deleteUser = async (userId) => {
   return await User.findByIdAndDelete(userId);
 };
 
+// Add a query to a user
+const addQueryToUser = async (userId, queryData) => {
+  const newQuery = new Query(queryData);
+  await newQuery.save();
+
+  await User.findByIdAndUpdate(
+    userId,
+    { $push: { query: newQuery._id } }, // Push the query ID into the user's query array
+    { new: true }
+  );
+
+  return newQuery; // Optionally return the newly created query
+};
+
 module.exports = {
   createUser,
   getUserById,
   updateUser,
   findUserByUsername,
-  deleteUser
+  deleteUser,
+  addQueryToUser
 };

@@ -1,19 +1,26 @@
 // query.controller.js
 
-const queryDAO = require('../daos/query.dao');
+const queryDAO = require('../daos/query.dao')
+const userDAO = require('../daos/user.dao')
 
 // Create a new query
 exports.createQuery = async (req, res) => {
   const { question, bias, response } = req.body;
-  const userId = req.user._id; // να προσέξω στο front πως στέλνει το Id
+  // const userId = req.user._id; // να προσέξω στο front πως στέλνει το Id
+  const userId = req.user.full._id;
 
   try {
+    // Πρώτα το δημιουργώ στα queries
     const newQuery = await queryDAO.createQuery({
       question,
       bias,
       response,
       userId
     });
+
+    // και μετά το προσθέτο στον user
+    await userDAO.addQueryToUser(userId, newQuery);
+
     res.status(201).json({
       message: 'Query created successfully',
       query: newQuery

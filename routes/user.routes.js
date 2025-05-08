@@ -70,37 +70,29 @@ router.get('/:userId', userController.getUserById);
  * @swagger
  * /api/user/{userId}:
  *   put:
- *     summary: Update a user by ID
+ *     summary: Update user by ID
  *     tags: [Users]
  *     parameters:
  *       - in: path
  *         name: userId
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: The user ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
  *             properties:
  *               username:
  *                 type: string
- *               hashedPassword:
+ *               password:
  *                 type: string
- *               roles:
- *                 type: array
- *                 items:
- *                   type: string
- *                 readOnly: true
- *                 description: Immutable. Cannot be updated.
  *     responses:
  *       200:
- *         description: User updated successfully
+ *         description: User updated
  *       404:
- *         description: User not found
+ *         description: Not found
  *       500:
  *         description: Server error
  */

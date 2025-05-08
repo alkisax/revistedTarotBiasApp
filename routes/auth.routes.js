@@ -13,83 +13,26 @@ const authController = require('../controllers/auth.controller')
  * @swagger
  * /api/login:
  *   post:
- *     summary: Login with username and password
+ *     summary: User login
  *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
  *             required: [username, password]
  *             properties:
  *               username:
  *                 type: string
- *                 example: admin123
  *               password:
  *                 type: string
- *                 example: MySecurePassword1!
  *     responses:
  *       200:
- *         description: Successful login
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *                   properties:
- *                     token:
- *                       type: string
- *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
- *                     admin:
- *                       type: object
- *                       properties:
- *                         username:
- *                           type: string
- *                           example: admin123
- *                         email:
- *                           type: string
- *                           format: email
- *                           example: admin@example.com
- *                         roles:
- *                           type: array
- *                           items:
- *                             type: string
- *                           example: ["admin"]
- *                         id:
- *                           type: string
- *                           example: 609e12672f1b2c001f2b1234
+ *         description: Login successful
  *       400:
- *         description: Missing credentials or other error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Username is required
+ *         description: Missing or invalid input
  *       401:
- *         description: Invalid username or password
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Invalid username or password
+ *         description: Unauthorized
  */
 router.post('/', authController.login)
 

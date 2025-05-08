@@ -4,13 +4,13 @@ const express = require('express');
 const router = express.Router();
 const queryController = require('../controllers/query.controller')
 const { verifyToken } = require('../middlewares/verification.middleware');
+const populateUser = require('../middlewares/populateUser.middleware');
 
 /**
  * @swagger
  * /api/query:
  *   post:
- *     summary: Create a new query
- *     description: Creates a new query based on the provided question, bias, and response.
+ *     summary: Submit a query
  *     tags: [Queries]
  *     security:
  *       - bearerAuth: []
@@ -19,11 +19,7 @@ const { verifyToken } = require('../middlewares/verification.middleware');
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - question
- *               - bias
- *               - response
+ *             required: [question, bias, response]
  *             properties:
  *               question:
  *                 type: string
@@ -35,85 +31,58 @@ const { verifyToken } = require('../middlewares/verification.middleware');
  *                 type: boolean
  *     responses:
  *       201:
- *         description: Query created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 query:
- *                   $ref: '#/components/schemas/Query'
+ *         description: Query created
  *       500:
- *         description: Internal server error
+ *         description: Server error
  */
-router.post('/', verifyToken, queryController.createQuery); //verifyToken should be checked if admin specific
+router.post('/', verifyToken, populateUser, queryController.createQuery); 
 
 /**
  * @swagger
  * /api/query/{userId}:
  *   get:
- *     summary: Get all queries by user ID
- *     description: Retrieves all queries for a specific user by their user ID.
+ *     summary: Get queries by user ID
  *     tags: [Queries]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: userId
+ *       - name: userId
+ *         in: path
  *         required: true
+ *         description: User ID
  *         schema:
  *           type: string
- *         description: The ID of the user whose queries to retrieve.
  *     responses:
  *       200:
- *         description: A list of queries
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Query'
+ *         description: List of queries
  *       500:
- *         description: Internal server error
+ *         description: Server error
  */
-router.get('/:userId', verifyToken, queryController.getAllQueriesByUser);
+router.get('/:userId', verifyToken, populateUser, queryController.getAllQueriesByUser);
 
 /**
  * @swagger
  * /api/query/{queryId}/important:
  *   patch:
- *     summary: Toggle the important status of a query
- *     description: Toggles the "important" flag of a specific query.
+ *     summary: Toggle important status of a query
  *     tags: [Queries]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: queryId
+ *       - name: queryId
+ *         in: path
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the query to toggle the important status.
  *     responses:
  *       200:
- *         description: Query updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 updatedQuery:
- *                   $ref: '#/components/schemas/Query'
+ *         description: Query updated
  *       404:
  *         description: Query not found
  *       500:
- *         description: Internal server error
+ *         description: Server error
  */
-router.patch('/:queryId/important', verifyToken, queryController.toggleImportant);
+router.patch('/:queryId/important', verifyToken, populateUser, queryController.toggleImportant);
 
 /**
  * @swagger
@@ -139,6 +108,6 @@ router.patch('/:queryId/important', verifyToken, queryController.toggleImportant
  *       500:
  *         description: Internal server error
  */
-router.delete('/:queryId', verifyToken, queryController.deleteQuery);
+router.delete('/:queryId', verifyToken, populateUser, queryController.deleteQuery);
 
 module.exports = router;

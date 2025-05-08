@@ -13,54 +13,32 @@ const authController = require('../controllers/userAuth.controller'); // Rename 
  * @swagger
  * /api/userAuth/login:
  *   post:
- *     summary: Login with username and password
+ *     summary: User login
  *     tags: [User Authentication]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - username
- *               - password
+ *             required: [username, password]
  *             properties:
  *               username:
  *                 type: string
- *                 example: johndoe
  *               password:
  *                 type: string
- *                 example: password123
  *     responses:
  *       200:
  *         description: Login successful
  *         content:
  *           application/json:
  *             schema:
- *               type: object
  *               properties:
- *                 status:
- *                   type: boolean
- *                 data:
+ *                 token:
+ *                   type: string
+ *                 user:
  *                   type: object
- *                   properties:
- *                     token:
- *                       type: string
- *                     user:
- *                       type: object
- *                       properties:
- *                         username:
- *                           type: string
- *                         email:
- *                           type: string
- *                         roles:
- *                           type: array
- *                           items:
- *                             type: string
- *                         id:
- *                           type: string
  *       400:
- *         description: Missing input or bad request
+ *         description: Missing input
  *       401:
  *         description: Invalid credentials
  */
