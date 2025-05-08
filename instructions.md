@@ -4779,8 +4779,824 @@ catch (error) {
 
 # add a user sign up / sign in για να δείξω ξεκάθαρα μια CRUD λειτουργεία
 
-- swagger models add
+# backend users
 
+- swagger models add
+```js
+    components: {
+      schemas: {
+        Admin: m2s(Admin),
+        Participant: m2s(Participant),
+        Transaction: m2s(Transaction),
+        User: m2s(User),
+        Query: m2s(Query)
+      },
+    }
+```
+## δημιουργία αρχείων για users
+#### users.model.js
+```js
+const mongoose = require("mongoose")
+
+const Schema = mongoose.Schema
+const userSchema = new Schema({
+  username:{
+    type: String,
+    required: [true, 'username is required'],
+  },
+  hashedPassword:{
+    type: String,
+    required: [true, 'password is required'],
+  },
+  roles:{
+    type: [String],
+    default: ['user'],
+    immutable: true
+  },
+  query: [{
+    type: mongoose.Schema.Types.ObjectId, // Each item here is an ObjectId pointing to a Query document
+    ref: 'Query' // This tells Mongoose *which* collection/model to link (the 'Queries' model)
+  }],
+},
+{
+  collection: 'users',
+  timestamps: true
+})
+module.exports = mongoose.model('User', userSchema)
+```
+
+#### user.dao.js
+```js
+const User = require('../models/user.models');
+const Query = require('../models/query.models'); // βάζω και του query γιατι πρέπει να κανω Push το νεο query στον user
+
+// Create a new user
+const createUser = async (userData) => {
+  const newUser = new User(userData);
+  return await newUser.save();
+};
+
+// Get user by ID
+const getUserById = async (userId) => {
+  return await User.findById(userId).populate('query'); // populate queries if needed
+};
+
+// Find user by username
+const findUserByUsername = async (username) => {
+  return await User.findOne({ username });
+};
+
+// Update user by ID
+const updateUser = async (userId, updateData) => {
+  return await User.findByIdAndUpdate(userId, updateData, { new: true });
+};
+
+// Delete user by ID
+const deleteUser = async (userId) => {
+  return await User.findByIdAndDelete(userId);
+};
+
+// Add a query to a user
+const addQueryToUser = async (userId, queryData) => {
+  const newQuery = new Query(queryData);
+  await newQuery.save();
+
+  await User.findByIdAndUpdate(
+    userId,
+    { $push: { query: newQuery._id } }, // Push the query ID into the user's query array
+    { new: true }
+  );
+
+  return newQuery; // Optionally return the newly created query
+};
+
+module.exports = {
+  createUser,
+  getUserById,
+  updateUser,
+  findUserByUsername,
+  deleteUser,
+  addQueryToUser
+};
+```
+
+#### user.controller.js
+```js
+const bcrypt = require('bcrypt')
+const userDAO = require('../daos/user.dao');
+
+// Create a new user
+exports.createUser = async (req, res) => {
+  try {
+    const userData = req.body;
+    
+    const SaltOrRounds = 10
+    const hashedPassword = await bcrypt.hash(userData.password, SaltOrRounds)
+    const userToSave = {
+      ...userData,
+      hashedPassword,
+    };
+
+    const newUser = await userDAO.createUser(userToSave);
+    res.status(201).json({
+      message: 'User created successfully',
+      user: newUser,
+    });
+  } catch (error) {
+    console.error('Create User Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get user by ID
+exports.getUserById = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await userDAO.getUserById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Get User Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Update user by ID
+exports.updateUser = async (req, res) => {
+  const { userId } = req.params;
+  const updateData = req.body;
+
+  try {
+    if (updateData.password) {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(updateData.password, saltRounds);
+      updateData.hashedPassword = hashedPassword;
+      delete updateData.password; // Remove plain password
+    }
+
+    const updatedUser = await userDAO.updateUser(userId, updateData);
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json({
+      message: 'User updated successfully',
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error('Update User Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Delete user by ID
+exports.deleteUser = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const deletedUser = await userDAO.deleteUser(userId);
+    if (!deletedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Delete User Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+```
+#### user.routes (με swagger)
+```js
+const express = require('express');
+const router = express.Router();
+const userController = require('../controllers/user.controller');
+
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
+
+/**
+ * @swagger
+ * /api/user:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               roles:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 default: ["user"]
+ *                 readOnly: true
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       500:
+ *         description: Server error
+ */
+router.post('/', userController.createUser);
+
+/**
+ * @swagger
+ * /api/user/{userId}:
+ *   get:
+ *     summary: Get a user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: User data
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/:userId', userController.getUserById);
+
+/**
+ * @swagger
+ * /api/user/{userId}:
+ *   put:
+ *     summary: Update user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User updated
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/:userId', userController.updateUser);
+
+/**
+ * @swagger
+ * /api/user/{userId}:
+ *   delete:
+ *     summary: Delete a user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/:userId', userController.deleteUser);
+
+module.exports = router;
+```
+
+## θα φτιάξω ένα δικό του ανεξάρτητο userAuth αντιγράφοντας το auth για να μην επιρεασω την λειτουργεία αυτού που ήδη λειτουργει. 
+
+- Προσοχή εδώ το auth πρέπει να στέλνει ολα τα στοιχεία
+#### populateUser.middleware.js
+```js
+const User = require('../models/user.models');
+
+const populateUser = async (req, res, next) => {
+  try {
+    const userId = req.user?.id
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID missing from token' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    req.user.full = user; // attach full user document
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = populateUser;
+```
+
+
+#### userAuth.service.js
+```js
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const { OAuth2Client } = require('google-auth-library')
+
+generateAccessToken = (user) => {
+  const payload = {
+    username: user.username,
+    email: user.email,
+    roles: user.roles,
+    id: user._id
+  }
+
+  const secret = process.env.SECRET
+  const options = {
+    expiresIn: '1h'
+  }
+  const token = jwt.sign(payload, secret, options)
+  return token
+}
+
+const verifyPassword = async (password, hashedPassword) => {
+  return await bcrypt.compare(password, hashedPassword)
+}
+
+const verifyAccessToken = (token) => {
+  const secret = process.env.SECRET
+  try {
+    const payload = jwt.verify(token, secret)
+    return { 
+      verified: true, data: payload
+    }
+  } catch (error) {
+    return { 
+      verified: false, data: error.message
+    }
+  }
+}
+
+const getTokenFrom = (req) => {
+  const authorization = req.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    const token = authorization.replace('Bearer ', '')
+    // console.log(token)
+    return token    
+  }
+  return null
+}
+
+
+module.exports = {
+  generateAccessToken,
+  verifyPassword,
+  verifyAccessToken,
+  getTokenFrom,
+}
+```
+
+#### user.auth.controller.js
+```js
+// https://github.com/mkarampatsis/coding-factory7-nodejs/blob/main/usersApp/controllers/auth.controller.js
+// https://fullstackopen.com/en/part4/token_authentication
+const bcrypt = require ('bcrypt')
+const jwt = require('jsonwebtoken');
+const logger = require('../utils/logger');
+const User = require('../models/user.models')
+const authService = require('../services/auth.service')
+const userDAO = require('../daos/user.dao')
+
+const FRONTEND_URL = process.env.FRONTEND_URL
+exports.login = async (req,res) => {
+  try {
+
+    const username = req.body.username
+    const password = req.body.password
+
+    if (!username) {
+      logger.warn("Login attempt missing username");
+      return res.status(400).json({
+        status: false,
+        message: "Username is required"
+      });
+    }
+    
+    if (!password) {
+      logger.warn("Login attempt missing password");
+      return res.status(400).json({
+        status: false,
+        message: "Password is required"
+      });
+    }
+
+    // Step 1: Find the user by username
+    const user = await userDAO.findUserByUsername(req.body.username);
+
+    if(!user){
+      logger.warn(`Failed login attempt - user not found: ${username}`);
+      return res.status(401).json({
+        status: false,
+        message: 'Invalid username or password or user not found'
+      })
+    }
+
+    // Step 2: Check the password
+    const isMatch = await authService.verifyPassword (password, user.hashedPassword)
+
+    if(!isMatch){
+      logger.warn(`Failed login attempt - incorrect password for user: ${username}`);
+      return res.status(401).json({
+        status: false,
+        message: 'Invalid username or password'
+      })
+    }
+
+    // Step 3: Generate the token
+    const token = authService.generateAccessToken(user)
+    logger.info(`User ${user.username} logged in successfully`);
+
+    // Step 4: Return the token and user info
+    res.status(200).json({
+      status: true,
+      data: {
+        token: token,
+        admin: {
+          username: user.username,
+          email: user.email,
+          roles: user.roles,
+          id: user._id
+        }
+      }
+    })
+
+  } catch (error) {
+    logger.error(`Login error: ${error.message}`);
+    res.status(400).json({
+      status: false,
+      data: error.message
+    })
+  }
+}
+```
+
+#### userAuth. routes (με  swagger)
+```js
+const express = require('express');
+const router = express.Router();
+const authController = require('../controllers/userAuth.controller'); // Rename your controller file to match if needed
+
+/**
+ * @swagger
+ * tags:
+ *   name: User Authentication
+ *   description: User login and authentication
+ */
+
+/**
+ * @swagger
+ * /api/userAuth/login:
+ *   post:
+ *     summary: User login
+ *     tags: [User Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             required: [username, password]
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *       400:
+ *         description: Missing input
+ *       401:
+ *         description: Invalid credentials
+ */
+router.post('/login', authController.login);
+
+// Optional: If you later add register, refresh token, logout, etc.
+// router.post('/register', authController.register);
+// router.post('/refresh-token', authController.refreshToken);
+
+module.exports = router;
+```
+
+## αλλαγές στο queries ωστε να έχει importand και να επικοινωνεί με το user
+
+#### query.models.js
+```js
+// query.model.js
+
+const mongoose = require('mongoose');
+
+const querySchema = new mongoose.Schema({
+  question: String,
+  bias: String,
+  response: {
+    type: String
+  },
+  important:{
+    type: Boolean,
+    default: false
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId, // This stores a reference (ID) to a user document
+    ref: 'User', // This tells Mongoose to link this field to the 'User' model
+    required: true
+  }
+},
+{
+  collection: 'queries',
+  timestamps: true
+});
+
+const Query = mongoose.model('Query', querySchema);
+
+module.exports = Query;
+```
+
+#### query.dao.js
+```js
+// dao/query.dao.js
+
+const Query = require('../models/query.models');
+
+const createQuery = async ({ question, bias, response, userId }) => {
+  const query = new Query({
+    question,
+    bias,
+    response,
+    user: userId
+  });
+  return await query.save();
+};
+
+const getAllQueriesByUser = async (userId) => {
+  return await Query.find({}).sort({ createdAt: -1 });
+};
+
+const toggleImportant = async (queryId) => {
+  const query = await Query.findById(queryId);
+  if (!query) {
+    throw new Error('Query not found');
+  }
+  query.important = !query.important;
+  return await query.save();
+};
+
+const deleteQuery = async (queryId) => {
+  return await Query.findByIdAndDelete(queryId);
+};
+
+module.exports = {
+  createQuery,
+  getAllQueriesByUser,
+  toggleImportant,
+  deleteQuery
+};
+```
+
+#### query.controller.js
+```js
+// query.controller.js
+
+const queryDAO = require('../daos/query.dao')
+const userDAO = require('../daos/user.dao')
+
+// Create a new query
+exports.createQuery = async (req, res) => {
+  const { question, bias, response } = req.body;
+  // const userId = req.user._id; // να προσέξω στο front πως στέλνει το Id
+  const userId = req.user.full._id;
+
+  try {
+    // Πρώτα το δημιουργώ στα queries
+    const newQuery = await queryDAO.createQuery({
+      question,
+      bias,
+      response,
+      userId
+    });
+
+    // και μετά το προσθέτο στον user
+    await userDAO.addQueryToUser(userId, newQuery);
+
+    res.status(201).json({
+      message: 'Query created successfully',
+      query: newQuery
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get all queries by user ID
+exports.getAllQueriesByUser = async (req, res) => {
+  const { userId } = req.params; // εδώ το στέλνει ως params? γιατι διαφορετικα
+
+  try {
+    const queries = await queryDAO.getAllQueriesByUser(userId);
+    res.status(200).json(queries);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Toggle the "important" status of a query
+exports.toggleImportant = async (req, res) => {
+  const { queryId } = req.params; // να έρθει το queryId στα params
+
+  try {
+    const updatedQuery = await queryDAO.toggleImportant(queryId);
+    res.status(200).json({ message: 'Query updated successfully', updatedQuery });
+  } catch (error) {
+    console.error(error);
+    if (error.message === 'Query not found') {
+      res.status(404).json({ error: 'Query not found' });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+};
+
+// Delete a query by ID
+exports.deleteQuery = async (req, res) => {
+  const { queryId } = req.params; // να έρθει το queryId στα params
+
+  try {
+    await queryDAO.deleteQuery(queryId);
+    res.status(200).json({ message: 'Query deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    if (error.message === 'Query not found') {
+      res.status(404).json({ error: 'Query not found' });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+};
+```
+
+#### query.routes.js
+```js
+// query.routes.js
+
+const express = require('express');
+const router = express.Router();
+const queryController = require('../controllers/query.controller')
+const { verifyToken } = require('../middlewares/verification.middleware');
+const populateUser = require('../middlewares/populateUser.middleware');
+
+/**
+ * @swagger
+ * /api/query:
+ *   post:
+ *     summary: Submit a query
+ *     tags: [Queries]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             required: [question, bias, response]
+ *             properties:
+ *               question:
+ *                 type: string
+ *               bias:
+ *                 type: string
+ *               response:
+ *                 type: string
+ *               important:
+ *                 type: boolean
+ *     responses:
+ *       201:
+ *         description: Query created
+ *       500:
+ *         description: Server error
+ */
+router.post('/', verifyToken, populateUser, queryController.createQuery); 
+
+/**
+ * @swagger
+ * /api/query/{userId}:
+ *   get:
+ *     summary: Get queries by user ID
+ *     tags: [Queries]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: userId
+ *         in: path
+ *         required: true
+ *         description: User ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of queries
+ *       500:
+ *         description: Server error
+ */
+router.get('/:userId', verifyToken, populateUser, queryController.getAllQueriesByUser);
+
+/**
+ * @swagger
+ * /api/query/{queryId}/important:
+ *   patch:
+ *     summary: Toggle important status of a query
+ *     tags: [Queries]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: queryId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Query updated
+ *       404:
+ *         description: Query not found
+ *       500:
+ *         description: Server error
+ */
+router.patch('/:queryId/important', verifyToken, populateUser, queryController.toggleImportant);
+
+/**
+ * @swagger
+ * /api/query/{queryId}:
+ *   delete:
+ *     summary: Delete a query by ID
+ *     description: Deletes a query by its ID.
+ *     tags: [Queries]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: queryId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the query to delete.
+ *     responses:
+ *       200:
+ *         description: Query deleted successfully
+ *       404:
+ *         description: Query not found
+ *       500:
+ *         description: Internal server error
+ */
+router.delete('/:queryId', verifyToken, populateUser, queryController.deleteQuery);
+
+module.exports = router;
+```
+
+---
+# front end users
 
 
 
