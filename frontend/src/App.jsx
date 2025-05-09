@@ -17,9 +17,10 @@ import Appbar from './components/Appbar'
 import Home from './components/Home'
 import Participantinfoform from './components/ParticipantInfoForm'
 import Deck1 from './tarot-components/Deck1'
+import UserLoginForm from './components/UserLoginForm'
 
-// const url = 'http://localhost:3001/api'
-const url = 'https://revistedtarotbiasapp.onrender.com/api'
+const url = 'http://localhost:3001/api'
+// const url = 'https://revistedtarotbiasapp.onrender.com/api'
 
 const App = () => {
   const [user, setUser] = useState(null)
@@ -39,10 +40,15 @@ const App = () => {
     const token = localStorage.getItem("token")
     const roles = JSON.parse(localStorage.getItem("roles"))
     const adminFromStorage = JSON.parse(localStorage.getItem("admin"))
-    if (token && roles && roles.includes('admin') && adminFromStorage) {
-      const userFromStorage = { token, roles }
-      setAdmin(userFromStorage)
-      setUserIsAdmin(true) 
+    const userFromStorage = JSON.parse(localStorage.getItem("user"));
+    if (token && roles) {
+      if (adminFromStorage && roles.includes("admin")) {
+        setAdmin({ token, roles });
+        setUserIsAdmin(true);
+      } else if (userFromStorage) {
+        setUser(userFromStorage);
+        setUserIsAdmin(roles.includes("admin"));
+      }
     }
   }, [])
 
@@ -74,12 +80,40 @@ const App = () => {
     navigate("/")
   }
 
+  const handleUserLogin = async (event) => {
+    event.preventDefault()
+    console.log("Submitting login...")
+
+    try {
+      const response = await axios.post(`${url}/userAuth/login`, {
+        "username": username,
+        "password": password
+      })
+      console.log("Login successful", response.data)
+      const { token, user } = response.data.data
+      setUser(user)
+      localStorage.setItem("token", token)
+      localStorage.setItem("roles", JSON.stringify(user.roles))
+      localStorage.setItem("user", JSON.stringify(user))
+
+      const isAdmin = user.roles.includes("admin")
+      setUserIsAdmin(isAdmin)
+      console.log("Is admin?", isAdmin)
+
+    } catch (error) {
+      console.log(error)     
+    }
+    navigate("/")
+  }
+
   const handleLogout = async () => {
     localStorage.removeItem("token")
     localStorage.removeItem("roles");
     localStorage.removeItem("admin");
+    localStorage.removeItem("user")
     setAdmin(null)
     setUserIsAdmin(false)
+    setUser(null)
     console.log("Logged out successfully")
     navigate("/")
   }
@@ -120,6 +154,7 @@ const App = () => {
       <Appbar 
         admin={admin}
         handleLogout={handleLogout}
+        user={user}
       />
     </div>
 
@@ -186,6 +221,19 @@ const App = () => {
               setUsername={setUsername}
               setPassword={setPassword}
               handleLogin={handleLogin}
+              url={url}
+            />
+          </>
+        } />
+
+        <Route path="/userlogin" element={
+          <>
+            <UserLoginForm 
+              username={username}
+              password={password}
+              setUsername={setUsername}
+              setPassword={setPassword}
+              handleUserLogin={handleUserLogin}
               url={url}
             />
           </>

@@ -61,7 +61,7 @@ exports.login = async (req,res) => {
       status: true,
       data: {
         token: token,
-        admin: {
+        user: {
           username: user.username,
           email: user.email,
           roles: user.roles,

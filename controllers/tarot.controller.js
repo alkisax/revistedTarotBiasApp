@@ -32,7 +32,8 @@ exports.getTarotReading = async (req, res) => {
       .filter(p => p.trim().length > 0) // remove empty paragraphs
       .pop(); // gets the last paragraph
 
-    const userId = req.user._id // αυτό πρέπει να το προσέξουμε στο front
+    // ***ADDED '?' ***
+    const userId = req.user?._id // αυτό πρέπει να το προσέξουμε στο front
 
     // μου αποθηκεύει την ερώτηση (Μόνο αν δεν είναι η προκατασκευασμένη)
     if (userQuestion !== "What do I need to know today?" && userId) {

@@ -1,7 +1,7 @@
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, Routes, Route } from 'react-router-dom';
 
-const Appbar = ({ admin, handleLogout }) => {
+const Appbar = ({ admin, handleLogout, user }) => {
 
   const padding = {
     paddingRight: 5,
@@ -35,6 +35,19 @@ const Appbar = ({ admin, handleLogout }) => {
           ) : (
             <Nav.Link as={Link} to="/login" style={padding}>
               Admin Login
+            </Nav.Link>
+          )}
+
+          {user ? (
+            <div className="d-flex flex-column align-items-start ml-auto" style={{ padding }}>
+              <em style={{ paddingRight: 10 }}>{user.token ? 'User logged in' : 'Logged in'}</em>
+              <Button variant="outline-light" size="sm" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <Nav.Link as={Link} to="/userLogin" style={padding}>
+              User Login
             </Nav.Link>
           )}
 
