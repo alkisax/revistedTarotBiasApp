@@ -22,18 +22,24 @@ exports.getTarotReading = async (req, res) => {
   }
 
   try {
+    console.log('🔵 [tarotReading] Incoming userQuestion:', userQuestion);
+    console.log('🔵 [tarotReading] Full req.body:', req.body);
+    console.log('🔵 [tarotReading] req.user:', req.user); // <--- check if this is populated
+
     const cards = drawnCards().selectedCards // τραβάει 3 χαρτιά ως λεκτικό // το .selectedCards χρειάζετε γιατι το dranCards επιστρέφει ένα αντικείμενο με το κλειδί selectedCards
     const prompt = gpt_prompt(lang) // καλέι το γενικό Prompt στη σωστή γλώσσα
     const gptResponse = await getGPTResponse(prompt, userQuestion, cards, bias, apiKey) // επικοινωνεί με το api
 
-    const gptResponseLastParagraph = gptResponse
+    let gptResponseLastParagraph = gptResponse
       .trim()
       .split(/\n{2,}/) // splits by double line breaks (typical paragraph separators)
       .filter(p => p.trim().length > 0) // remove empty paragraphs
       .pop(); // gets the last paragraph
 
+    gptResponseLastParagraph =  `Cards: ${JSON.stringify(cards)}\n\n${gptResponseLastParagraph}`
+
     // ***ADDED '?' ***
-    const userId = req.user?._id // αυτό πρέπει να το προσέξουμε στο front
+    const userId = req.user?.id // αυτό πρέπει να το προσέξουμε στο front
 
     // μου αποθηκεύει την ερώτηση (Μόνο αν δεν είναι η προκατασκευασμένη)
     if (userQuestion !== "What do I need to know today?" && userId) {
@@ -43,6 +49,7 @@ exports.getTarotReading = async (req, res) => {
         response: gptResponseLastParagraph,
         userId: userId
       });
+      console.log(gptResponseLastParagraph);      
     } 
 
     res.status(200).json({

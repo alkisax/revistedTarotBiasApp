@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/userAuth.controller'); // Rename your controller file to match if needed
-
+const authController = require('../controllers/userAuth.controller');
 /**
  * @swagger
  * tags:

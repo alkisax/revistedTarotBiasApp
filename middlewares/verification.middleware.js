@@ -8,8 +8,15 @@ const authService = require('../services/auth.service');
  */
 const verifyToken = (req, res, next) => {
   const token = authService.getTokenFrom(req);
-  const verificationResult = authService.verifyAccessToken(token);
+  console.log("🔵 Token extracted:", token);
+  if (!token) {
+    console.log("🔵 No token provided, setting req.user to undefined");
+    // No token provided, continue with undefined req.user
+    req.user = undefined;
+    return next();
+  }
 
+  const verificationResult = authService.verifyAccessToken(token);
   if (!verificationResult.verified) {
     console.log(`Unauthorized access attempt with token: ${token}`);
     return res.status(401).json({
@@ -19,7 +26,31 @@ const verifyToken = (req, res, next) => {
   }
 
   req.user = verificationResult.data;
+  console.log("🔵 User data from token:", req.user); 
   next();
+};
+
+const optionalVerifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.split(" ")[1];
+
+    try {
+      const verificationResult = authService.verifyAccessToken(token);
+      
+      if (verificationResult.verified) {
+        req.user = verificationResult.data;
+      } else {
+        console.warn("Optional token verification failed");
+      }
+    } catch (error) {
+      console.warn("Optional token failed to verify:", error.message);
+      // Continue without attaching user
+    }
+  }
+
+  next(); // Always call next()
 };
 
 /**
@@ -44,5 +75,6 @@ const checkRole = (requiredRole) => {
 
 module.exports = {
   verifyToken,
+  optionalVerifyToken,
   checkRole
 };

@@ -2,6 +2,7 @@
 
 const express = require('express');
 const tarotController = require('../controllers/tarot.controller');
+const { optionalVerifyToken } = require('../middlewares/verification.middleware');
 
 const router = express.Router();
 
@@ -62,6 +63,6 @@ const router = express.Router();
  *                   type: string
  *                   example: Internal server error
  */
-router.post('/tarot-reading', tarotController.getTarotReading);
+router.post('/tarot-reading', optionalVerifyToken, tarotController.getTarotReading);
 
 module.exports = router;

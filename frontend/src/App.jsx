@@ -19,6 +19,7 @@ import Participantinfoform from './components/ParticipantInfoForm'
 import Deck1 from './tarot-components/Deck1'
 import UserLoginForm from './components/UserLoginForm'
 import UserSignup from './components/userSignup'
+import Queries from './components/Queries'
 
 const url = 'http://localhost:3001/api'
 // const url = 'https://revistedtarotbiasapp.onrender.com/api'
@@ -250,8 +251,14 @@ const App = () => {
             setUsers={setUsers}
           />
         }>
+        </Route>
 
-
+        <Route path="/queries" element={
+          <Queries
+            user={user}
+            url={url}
+          />
+        }>
         </Route>
 
         <Route path='/buymeacoffee' element={

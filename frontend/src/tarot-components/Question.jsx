@@ -8,7 +8,7 @@ const Question = ({ newQuestion, handleQuestionChange, addquestion }) => {
           type="text"
           value={newQuestion}
           onChange={handleQuestionChange}
-          className="form-control me-2" // Adds padding and some margin
+          className="form-control me-2" 
           placeholder="Type your question here"
         />
         <button type="submit" className="btn btn-primary">Submit</button>
