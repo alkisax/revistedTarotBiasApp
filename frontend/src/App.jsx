@@ -18,18 +18,19 @@ import Home from './components/Home'
 import Participantinfoform from './components/ParticipantInfoForm'
 import Deck1 from './tarot-components/Deck1'
 import UserLoginForm from './components/UserLoginForm'
+import UserSignup from './components/userSignup'
 
 const url = 'http://localhost:3001/api'
 // const url = 'https://revistedtarotbiasapp.onrender.com/api'
 
 const App = () => {
   const [user, setUser] = useState(null)
+  const [users, setUsers] = useState([])
   const [message, setMessage] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [userIsAdmin, setUserIsAdmin] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [users, setUsers] = useState([])
   const [participants, setParticipants] = useState([])
   const [admin, setAdmin] = useState(null)
   const [newParticipant, setNewParticipant] = useState(null)
@@ -146,7 +147,7 @@ const App = () => {
       console.error("Failed to delete participant", error.response?.data || error.message);
     }
   };
-  
+
   return (
 <div className="bg-dark text-light d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '100vh', position: 'relative' }}>
 
@@ -238,6 +239,20 @@ const App = () => {
             />
           </>
         } />
+
+        <Route path="/signup" element={
+          <UserSignup 
+            username={username}
+            password={password}
+            setUsername={setUsername}
+            setPassword={setPassword}
+            url={url}
+            setUsers={setUsers}
+          />
+        }>
+
+
+        </Route>
 
         <Route path='/buymeacoffee' element={
           // <Checkout />

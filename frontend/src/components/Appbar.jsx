@@ -46,9 +46,14 @@ const Appbar = ({ admin, handleLogout, user }) => {
               </Button>
             </div>
           ) : (
-            <Nav.Link as={Link} to="/userLogin" style={padding}>
+            <>
+                        <Nav.Link as={Link} to="/userLogin" style={padding}>
               User Login
             </Nav.Link>
+            <Nav.Link as={Link} to="/signUp" style={padding}>
+              Sign up
+            </Nav.Link>
+            </>
           )}
 
           </Nav>
