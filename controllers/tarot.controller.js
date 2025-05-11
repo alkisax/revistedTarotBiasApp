@@ -5,9 +5,12 @@ const { drawnCards } = require('../services/tarot.service');
 const { gpt_prompt } = require('../services/tarot.service')
 const { getGPTResponse } = require('../services/gpt.service');
 const queryDAO = require('../daos/query.dao')
+const userDAO = require('../daos/user.dao')
 const Query = require('../models/query.models');
+// const axios = require('axios');
+// const queryController = require('../controllers/query.controller')
 
-exports.getTarotReading = async (req, res) => {
+exports.getTarotReading = async (req, res, next) => {
 
   const apiKey = process.env.OPENAI_API_KEY
 
@@ -43,13 +46,15 @@ exports.getTarotReading = async (req, res) => {
 
     // μου αποθηκεύει την ερώτηση (Μόνο αν δεν είναι η προκατασκευασμένη)
     if (userQuestion !== "What do I need to know today?" && userId) {
-      await queryDAO.createQuery({
+      // το πρόβλημα με όλα αυτά ήταν οτι έσωσζε κατευθείαν το query χωρίς να καλέσει κάπως τα εντποιντ του query με αποτέλσεμσ να μην σωζετε στον χρήστη
+      const savedQuery = await queryDAO.createQuery({
         question: userQuestion, 
         bias: bias,
         response: gptResponseLastParagraph,
         userId: userId
       });
-      console.log(gptResponseLastParagraph);      
+      console.log("query added to queries");
+      await userDAO.addQueryToUser(userId, savedQuery._id)
     } 
 
     res.status(200).json({

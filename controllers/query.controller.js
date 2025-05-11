@@ -5,9 +5,12 @@ const userDAO = require('../daos/user.dao')
 
 // Create a new query
 exports.createQuery = async (req, res) => {
+  console.log("enter query.controller.createQuery");
+  
   const { question, bias, response } = req.body;
   // const userId = req.user._id; // να προσέξω στο front πως στέλνει το Id
   const userId = req.user.full._id;
+  console.log('req.user:', req.user);
 
   try {
     // Πρώτα το δημιουργώ στα queries
@@ -17,6 +20,8 @@ exports.createQuery = async (req, res) => {
       response,
       userId
     });
+    console.log(newQuery);
+    
 
     // και μετά το προσθέτο στον user
     const updatedUser = await userDAO.addQueryToUser(userId, newQuery._id);

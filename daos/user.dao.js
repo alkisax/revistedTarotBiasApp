@@ -29,6 +29,7 @@ const deleteUser = async (userId) => {
 
 // Add a query to a user
 const addQueryToUser = async (userId, queryId) => {
+  console.log(`Adding query ${queryId} to user ${userId} (from addQueryToUser user.dao)`);
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     { $push: { query: queryId } }, // Push the query ID into the user's query array

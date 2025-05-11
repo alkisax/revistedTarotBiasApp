@@ -5598,7 +5598,7 @@ module.exports = router;
 ---
 # front end users
 
-#### chagne to middleware, user dao and tarot routes
+#### chagne to middleware, user dao and tarot.controller δυσκολο προβλημα
 ```js
 const optionalVerifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -5622,27 +5622,34 @@ const optionalVerifyToken = (req, res, next) => {
   next();
 };
 ```
-
+- user.dao
 ```js
-router.post('/tarot-reading', optionalVerifyToken, tarotController.getTarotReading);
-```
-
-```js
+// Add a query to a user
 const addQueryToUser = async (userId, queryId) => {
-  await User.findByIdAndUpdate(
+  console.log(`Adding query ${queryId} to user ${userId} (from addQueryToUser user.dao)`);
+  const updatedUser = await User.findByIdAndUpdate(
     userId,
     { $push: { query: queryId } }, // Push the query ID into the user's query array
     { new: true }
   );
+  console.log('Updated user query array:', updatedUser.query);
+  return updatedUser;
 };
 ```
 
+- tarot.controller ( το πρόβλημα ήταν οτι ενώ εσωζε κατευθείαν το query επειδή το έκανε μέσο του dao δεν το έσωζε στον χρήστη. kalesa kai to δαο του χρήστη)
 ```js
-const getAllQueriesByUser = async (userId) => {
-  return await Query.find({ user: userId })
-  .sort({ createdAt: -1 })
-  .populate('user', 'username');
-};
+    if (userQuestion !== "What do I need to know today?" && userId) {
+      // το πρόβλημα με όλα αυτά ήταν οτι έσωσζε κατευθείαν το query χωρίς να καλέσει κάπως τα εντποιντ του query με αποτέλσεμσ να μην σωζετε στον χρήστη
+      const savedQuery = await queryDAO.createQuery({
+        question: userQuestion, 
+        bias: bias,
+        response: gptResponseLastParagraph,
+        userId: userId
+      });
+      console.log("query added to queries");
+      await userDAO.addQueryToUser(userId, savedQuery._id)
+    } 
 ```
 
 
