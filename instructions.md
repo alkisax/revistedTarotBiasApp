@@ -5598,7 +5598,52 @@ module.exports = router;
 ---
 # front end users
 
+#### chagne to middleware, user dao and tarot routes
+```js
+const optionalVerifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.split(" ")[1];
+
+    try {
+      const verificationResult = authService.verifyAccessToken(token);
+      
+      if (verificationResult.verified) {
+        req.user = verificationResult.data;
+      } else {
+        console.warn("Optional token verification failed");
+      }
+    } catch (error) {
+      console.warn("Optional token failed to verify:", error.message);
+      // Continue without attaching user
+    }
+  }
+  next();
+};
+```
+
+```js
+router.post('/tarot-reading', optionalVerifyToken, tarotController.getTarotReading);
+```
+
+```js
+const addQueryToUser = async (userId, queryId) => {
+  await User.findByIdAndUpdate(
+    userId,
+    { $push: { query: queryId } }, // Push the query ID into the user's query array
+    { new: true }
+  );
+};
+```
+
+```js
+const getAllQueriesByUser = async (userId) => {
+  return await Query.find({ user: userId })
+  .sort({ createdAt: -1 })
+  .populate('user', 'username');
+};
+```
 
 
 

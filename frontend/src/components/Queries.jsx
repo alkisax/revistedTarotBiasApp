@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { Button, Table } from 'react-bootstrap';
 import axios from 'axios'
 
 const Queries = ({ user, url }) => {
@@ -7,9 +8,14 @@ const Queries = ({ user, url }) => {
   const [showAll, setShowAll] = useState(false)
 
   const fetchQueries = async () => {
-    const userId = user._id
-    const fetchedQueries = await axios.get(`${url}/query/${userId}`)
-    setQueries(fetchedQueries)
+    try {  
+      const userId = user._id
+      const fetchedQueries = await axios.get(`${url}/query/${userId}`)
+      setQueries(fetchedQueries.data)
+      setLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch user queries:", err);
+    }
   }
 
   useEffect (() => {
@@ -46,52 +52,46 @@ const Queries = ({ user, url }) => {
   return (
     <>
       {loading && <p>Loading...</p>}
-      
+
       {!loading && queries.length === 0 && <p>No queries found</p>}
 
       <Button variant="info" onClick={toggleShowAll} className="mb-3">
-        {showAll ? "Show only important" : "Show all"}
+        {showAll ? "Show all queries" : "Show only important"}
       </Button>
 
-      {!loading && Array.isArray(queries) && queries.length !== 0 && (
+      {!loading && Array.isArray(queries) && queries.length > 0 && (
         <div className="table-responsive">
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th className="d-none d-sm-table-cell">Name</th>
-                <th className="d-none d-sm-table-cell">Surname</th>
-                <th className="d-none d-sm-table-cell">Amount (€)</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th className="d-none d-sm-table-cell">Date</th>
+                <th>Question</th>
+                <th>Bias</th>
+                <th>Response</th>
+                <th>Important</th>
+                <th>Date</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {queries
-              // με φιλτερ γινεται το show all
-                .filter(t => showAll || !t.processed)
-                .map((query) => {
-                  const participant = query.participant
-                  return (
-                    <tr key={query._id}>
-                      <td className="d-none d-sm-table-cell">{participant?.name || 'No Name'}</td>
-                      <td className="d-none d-sm-table-cell">{participant?.surname || 'No Surname'}</td>
-                      <td className="d-none d-sm-table-cell">€{query.amount}</td>
-                      <td>{participant?.email || 'No Email'}</td>
-                      <td>{query.processed ? 'Processed' : 'Unprocessed'}</td>
-                      <td className="d-none d-sm-table-cell">{new Date(query.createdAt).toLocaleString()}</td>
-                      <td>
-                        <Button
-                          variant={query.processed ? 'warning' : 'success'}
-                          onClick={() => markImportant(query._id)}
-                        >
-                          {query.processed ? 'Mark Unprocessed' : 'Send email & Mark Processed'}
-                        </Button>
-                      </td>
-                    </tr>
-                  )
-                })}
+                .filter((q) => showAll || q.important)
+                .map((query) => (
+                  <tr key={query._id}>
+                    <td>{query.question || 'No question'}</td>
+                    <td>{query.bias || 'N/A'}</td>
+                    <td>{query.response || 'Pending...'}</td>
+                    <td>{query.important ? 'Yes' : 'No'}</td>
+                    <td>{new Date(query.createdAt).toLocaleString()}</td>
+                    <td>
+                      <Button
+                        variant={query.important ? 'warning' : 'success'}
+                        onClick={() => markImportant(query._id)}
+                      >
+                        {query.important ? 'Mark Unimportant' : 'Mark Important'}
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
         </div>

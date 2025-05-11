@@ -13,7 +13,9 @@ const createQuery = async ({ question, bias, response, userId }) => {
 };
 
 const getAllQueriesByUser = async (userId) => {
-  return await Query.find({}).sort({ createdAt: -1 });
+  return await Query.find({ user: userId })
+  .sort({ createdAt: -1 })
+  .populate('user', 'username');
 };
 
 const toggleImportant = async (queryId) => {

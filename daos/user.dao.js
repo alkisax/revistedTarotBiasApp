@@ -28,17 +28,14 @@ const deleteUser = async (userId) => {
 };
 
 // Add a query to a user
-const addQueryToUser = async (userId, queryData) => {
-  const newQuery = new Query(queryData);
-  await newQuery.save();
-
-  await User.findByIdAndUpdate(
+const addQueryToUser = async (userId, queryId) => {
+  const updatedUser = await User.findByIdAndUpdate(
     userId,
-    { $push: { query: newQuery._id } }, // Push the query ID into the user's query array
+    { $push: { query: queryId } }, // Push the query ID into the user's query array
     { new: true }
   );
-
-  return newQuery; // Optionally return the newly created query
+  console.log('Updated user query array:', updatedUser.query);
+  return updatedUser;
 };
 
 module.exports = {

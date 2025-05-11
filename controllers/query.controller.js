@@ -19,7 +19,8 @@ exports.createQuery = async (req, res) => {
     });
 
     // και μετά το προσθέτο στον user
-    await userDAO.addQueryToUser(userId, newQuery);
+    const updatedUser = await userDAO.addQueryToUser(userId, newQuery._id);
+    console.log('User after adding query:', updatedUser);
 
     res.status(201).json({
       message: 'Query created successfully',

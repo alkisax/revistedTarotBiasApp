@@ -41,13 +41,16 @@ const Appbar = ({ admin, handleLogout, user }) => {
           {user ? (
             <div className="d-flex flex-column align-items-start ml-auto" style={{ padding }}>
               <em style={{ paddingRight: 10 }}>{user.token ? 'User logged in' : 'Logged in'}</em>
+              <Nav.Link as={Link} to="/queries" style={padding}>
+                User queries
+              </Nav.Link>
               <Button variant="outline-light" size="sm" onClick={handleLogout}>
                 Logout
               </Button>
             </div>
           ) : (
             <>
-                        <Nav.Link as={Link} to="/userLogin" style={padding}>
+            <Nav.Link as={Link} to="/userLogin" style={padding}>
               User Login
             </Nav.Link>
             <Nav.Link as={Link} to="/signUp" style={padding}>

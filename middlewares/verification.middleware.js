@@ -49,8 +49,7 @@ const optionalVerifyToken = (req, res, next) => {
       // Continue without attaching user
     }
   }
-
-  next(); // Always call next()
+  next();
 };
 
 /**
