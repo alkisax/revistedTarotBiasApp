@@ -94,10 +94,10 @@ describe("Transaction API", () => {
       expect(Array.isArray(res.body.data)).toBe(true);
     });
 
-    it("should return 401 if not authorized", async () => {
+    it("should return 403 if not authorized", async () => {
       const res = await request(app).get("/api/transaction");
 
-      expect(res.status).toBe(401);
+      expect(res.status).toBe(403);
     });
   });
 

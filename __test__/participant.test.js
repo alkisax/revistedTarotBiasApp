@@ -67,9 +67,9 @@ describe("Participant API", () => {
       expect(Array.isArray(res.body.data)).toBe(true);
     });
 
-    it("should return 401 if no token is provided", async () => {
+    it("should return 403 if no token is provided", async () => {
       const res = await request(app).get("/api/participant");
-      expect(res.status).toBe(401);
+      expect(res.status).toBe(403);
       expect(res.body.status).toBe(false);
     });
   });

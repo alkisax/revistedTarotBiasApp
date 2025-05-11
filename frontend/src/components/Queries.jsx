@@ -8,10 +8,18 @@ const Queries = ({ user, url }) => {
   const [showAll, setShowAll] = useState(false)
 
   const fetchQueries = async () => {
+    if (!user?.id) {
+      setLoading(false)
+      return
+    }
     try {  
-      const userId = user._id
-      const fetchedQueries = await axios.get(`${url}/query/${userId}`)
-      setQueries(fetchedQueries.data)
+      // const userId = user._id
+      const token = localStorage.getItem("token")
+      const res = await axios.get(
+        `${url}/query/${user.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setQueries(res.data)
       setLoading(false);
     } catch (err) {
       console.error("Failed to fetch user queries:", err);
@@ -24,22 +32,13 @@ const Queries = ({ user, url }) => {
 
   const markImportant = async (queryId) => {
     try {
-      const token = localStorage.getItem("token")
-      console.log("token: ", token);
-      
-      const response = await axios.patch(`${url}/${queryId}/important`,
-        {}, 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-      const isImportant = response.data.data.important
-      console.log("is query important?",isImportant);
-      
-      setQueries(response.data.data)
-      fetchQueries()
+    const token = localStorage.getItem("token")
+    await axios.patch(
+      `${url}/query/${queryId}/important`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    fetchQueries()
     } catch (error) {
       console.error("Error fetching queries:", error)
     }
@@ -56,7 +55,7 @@ const Queries = ({ user, url }) => {
       {!loading && queries.length === 0 && <p>No queries found</p>}
 
       <Button variant="info" onClick={toggleShowAll} className="mb-3">
-        {showAll ? "Show all queries" : "Show only important"}
+        {showAll ?  "Show only important" : "Show all queries"}
       </Button>
 
       {!loading && Array.isArray(queries) && queries.length > 0 && (

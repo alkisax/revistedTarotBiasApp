@@ -31,8 +31,10 @@ const { verifyToken, checkRole } = require('../middlewares/verification.middlewa
  *                   type: boolean
  *                 data:
  *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Transaction'
+ *                items:
+ *                type: string
+ *                format: objectId
+ *                example: []
  *       401:
  *         description: Unauthorized
  *       403:
@@ -92,23 +94,11 @@ router.get('/unprocessed', verifyToken, checkRole('admin'), transactionControlle
  *               processed:
  *                 type: boolean
  *               participant:
- *                 type: 681482bc65fc51183432885e
+ *                 type: string
+ *                 example: "6809210ea7481590e9759866"
  *     responses:
  *       201:
  *         description: Transaction created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 amount:
- *                   type: number
- *                 processed:
- *                   type: boolean
- *                 participant:
- *                   type: string
- *                 _id:
- *                   type: string
  *       400:
  *         description: Invalid input
  */
@@ -133,17 +123,6 @@ router.post('/', transactionController.create);
  *     responses:
  *       200:
  *         description: Transaction deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Transaction deleted successfully"
  *       404:
  *         description: Transaction not found
  *       400:
@@ -161,7 +140,7 @@ router.delete('/:id', verifyToken, checkRole('admin'), transactionController.del
  * @swagger
  * /api/transaction/toggle/{id}:
  *   put:
- *     summary: Toggle the processed status of a transaction (admin only)
+ *     summary: Toggle the processed status of a transaction (admin only) It will send also an automated thank you email (USE REAL ID)
  *     tags: [Transactions]
  *     security:
  *       - bearerAuth: []
@@ -175,17 +154,6 @@ router.delete('/:id', verifyToken, checkRole('admin'), transactionController.del
  *     responses:
  *       200:
  *         description: Transaction updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *                   description: The updated transaction object
  *       404:
  *         description: Transaction not found
  *       400:

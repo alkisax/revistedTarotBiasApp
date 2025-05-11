@@ -6,7 +6,7 @@ const authController = require('../controllers/auth.controller')
  * @swagger
  * tags:
  *   name: Auth
- *   description: Authentication endpoints
+ *   description: Authentication for admin endpoints
  */
 
 /**
@@ -24,8 +24,12 @@ const authController = require('../controllers/auth.controller')
  *             properties:
  *               username:
  *                 type: string
+ *                 example: alkisax
+ *                 default: alkisax
  *               password:
  *                 type: string
+ *                 example: 123
+ *                 default: 123
  *     responses:
  *       200:
  *         description: Login successful

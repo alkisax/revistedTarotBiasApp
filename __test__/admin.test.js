@@ -75,11 +75,11 @@ describe('GET /api/admins', () => {
     expect(res.body.data.length).toBeGreaterThan(0);
   });
 
-  it('should return 401 when no token is provided', async () => {
+  it('should return 403 when no token is provided', async () => {
     const res = await request(app)
       .get('/api/admin');
 
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(403);
     expect(res.body.status).toBe(false);
   });
 

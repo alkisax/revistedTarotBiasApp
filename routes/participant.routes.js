@@ -66,6 +66,8 @@ router.get ('/', verifyToken, checkRole('admin'), participantController.findAll)
  *                 type: array
  *                 items:
  *                   type: 507f1f77bcf86cd799439011
+ *                   example: 507f1f77bcf86cd799439011
+ *                   default: 507f1f77bcf86cd799439011
  *     responses:
  *       201:
  *         description: Participant created successfully
