@@ -12,7 +12,7 @@ import LoginForm from './components/LoginForm'
 import AdminLogedInView from './components/AdminLogedInView'
 import AdminPanel from './components/AdminPanel'
 import ProtectedRoute from './services/ProtectedRoute'
-import UserDetail from './components/UserDetail'
+import UserDetail from './components/ParticipantDetail'
 import Appbar from './components/Appbar'
 import Home from './components/Home'
 import Participantinfoform from './components/ParticipantInfoForm'
@@ -20,6 +20,8 @@ import Deck1 from './tarot-components/Deck1'
 import UserLoginForm from './components/UserLoginForm'
 import UserSignup from './components/userSignup'
 import Queries from './components/Queries'
+import ParticipantDetail from './components/ParticipantDetail'
+import UserDetails from './components/UserDetails'
 
 const url = 'http://localhost:3001/api'
 // const url = 'https://revistedtarotbiasapp.onrender.com/api'
@@ -149,6 +151,30 @@ const App = () => {
     }
   };
 
+  const handleDeleteUser = async (userId) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this user?")
+    if (!isConfirmed) {
+      console.log("User deletion cancelled");
+      return; // Exit the function if the user cancels
+    }
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.delete(`${url}/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      console.log("User deleted", response.data);
+      alert('User deleted successfully!')
+
+      setUsers(users.filter(user => user._id !== userId)); // αυτο προστεθηκε γιατι δεν πρεπει να κανεις ανανεωση της σελιδας σε single page app
+
+    } catch (error) {
+      console.error("Failed to delete user", error.response?.data || error.message);
+    }
+  }
+
   return (
 <div className="bg-dark text-light d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '100vh', position: 'relative' }}>
 
@@ -207,6 +233,7 @@ const App = () => {
               setParticipants={setParticipants}
               users={users}
               setUsers={setUsers}
+              handleDeleteUser={handleDeleteUser}
             />
           </>
         } />  
@@ -276,7 +303,9 @@ const App = () => {
         } />
 
         <Route path="/participant" element={<AdminPanel handleDeleteUser={handleDeleteParticipant} url={url} />} />
-        <Route path="/participant/:id" element={<UserDetail />} />
+        <Route path="/participant/:id" element={<ParticipantDetail />} />
+
+        <Route path="/user/:id" element={<UserDetails />} />
       </Routes>
     </div>
   )

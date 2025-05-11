@@ -44,6 +44,24 @@ const Queries = ({ user, url }) => {
     }
   }
 
+  const deleteQuery = async (queryId) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this query?")
+    if (!isConfirmed) {
+      console.log("Query deletion cancelled");
+      return; // Exit the function if the user cancels
+    }
+    try {
+      const token = localStorage.getItem("token")
+      await axios.delete(
+        `${url}/query/${queryId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      fetchQueries()
+    } catch (error) {
+      console.error("Error fetching queries:", error)
+    }
+  }
+
   const toggleShowAll = () => {
     setShowAll(!showAll)
   }
@@ -87,6 +105,13 @@ const Queries = ({ user, url }) => {
                         onClick={() => markImportant(query._id)}
                       >
                         {query.important ? 'Mark Unimportant' : 'Mark Important'}
+                      </Button>
+                      <Button
+                        className="mt-3"
+                        variant={'danger'}
+                        onClick={() => deleteQuery(query._id)}
+                      >
+                        delete query
                       </Button>
                     </td>
                   </tr>

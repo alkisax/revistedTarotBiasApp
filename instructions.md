@@ -5652,6 +5652,43 @@ const addQueryToUser = async (userId, queryId) => {
     } 
 ```
 
+- user dao
+```js
+const getAllUsers = async () => {
+  return await User.find({}).populate('query'); // optionally populate related queries
+};
+```
+- user controller
+```js
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await userDAO.getAllUsers();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Get All Users Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+```
+
+- routes
+```js
+/**
+ * @swagger
+ * /api/user:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of users
+ *       500:
+ *         description: Server error
+ */
+router.get('/', verifyToken, userController.getAllUsers);
+```
 
 
 

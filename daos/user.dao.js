@@ -1,6 +1,11 @@
 const User = require('../models/user.models');
 const Query = require('../models/query.models'); // βάζω και του query γιατι πρέπει να κανω Push το νεο query στον user
 
+// Get all users
+const getAllUsers = async () => {
+  return await User.find({}).populate('query'); // optionally populate related queries
+};
+
 // Create a new user
 const createUser = async (userData) => {
   const newUser = new User(userData);
@@ -45,5 +50,6 @@ module.exports = {
   updateUser,
   findUserByUsername,
   deleteUser,
-  addQueryToUser
+  addQueryToUser,
+  getAllUsers
 };

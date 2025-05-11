@@ -122,4 +122,21 @@ router.put('/:userId', userController.updateUser);
  */
 router.delete('/:userId', userController.deleteUser);
 
+/**
+ * @swagger
+ * /api/user:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of users
+ *       500:
+ *         description: Server error
+ */
+router.get('/', verifyToken, userController.getAllUsers);
+
+
 module.exports = router;
