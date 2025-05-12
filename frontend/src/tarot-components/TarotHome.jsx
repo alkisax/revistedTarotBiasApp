@@ -193,6 +193,7 @@ const TarotHome = () => {
     <div className="min-vh-100 d-flex justify-content-center align-items-center bg-dark text-white">
 
       <div className="container d-flex flex-column justify-content-center align-items-center py-4">
+        <p>See menu for instructions</p>
 
         <img src={banner} alt="banner" className="img-fluid w-50" />
 
