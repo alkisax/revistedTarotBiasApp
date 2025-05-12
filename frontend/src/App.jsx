@@ -305,7 +305,7 @@ const App = () => {
         <Route path="/participant" element={<AdminPanel handleDeleteUser={handleDeleteParticipant} url={url} />} />
         <Route path="/participant/:id" element={<ParticipantDetail />} />
 
-        <Route path="/user/:id" element={<UserDetails />} />
+        <Route path="/user/:id" element={<UserDetails url={url} />} />
       </Routes>
     </div>
   )

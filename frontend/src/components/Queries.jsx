@@ -78,14 +78,14 @@ const Queries = ({ user, url }) => {
 
       {!loading && Array.isArray(queries) && queries.length > 0 && (
         <div className="table-responsive">
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive>
             <thead>
               <tr>
                 <th>Question</th>
-                <th>Bias</th>
+                <th className="d-none d-md-table-cell">Bias</th>
                 <th>Response</th>
-                <th>Important</th>
-                <th>Date</th>
+                <th className="d-none d-md-table-cell">Important</th>
+                <th className="d-none d-md-table-cell">Date</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -95,23 +95,27 @@ const Queries = ({ user, url }) => {
                 .map((query) => (
                   <tr key={query._id}>
                     <td>{query.question || 'No question'}</td>
-                    <td>{query.bias || 'N/A'}</td>
+                    <td className="d-none d-md-table-cell">{query.bias || 'N/A'}</td>
                     <td>{query.response || 'Pending...'}</td>
-                    <td>{query.important ? 'Yes' : 'No'}</td>
-                    <td>{new Date(query.createdAt).toLocaleString()}</td>
+                    <td className="d-none d-md-table-cell">
+                      {query.important ? 'Yes' : 'No'}
+                    </td>
+                    <td className="d-none d-md-table-cell">
+                      {new Date(query.createdAt).toLocaleString()}
+                    </td>
                     <td>
                       <Button
                         variant={query.important ? 'warning' : 'success'}
                         onClick={() => markImportant(query._id)}
                       >
-                        {query.important ? 'Mark Unimportant' : 'Mark Important'}
+                        {query.important ? 'Unmark' : 'Mark Important'}
                       </Button>
                       <Button
-                        className="mt-3"
-                        variant={'danger'}
+                        className="mt-2"
+                        variant="danger"
                         onClick={() => deleteQuery(query._id)}
                       >
-                        delete query
+                        Delete
                       </Button>
                     </td>
                   </tr>
