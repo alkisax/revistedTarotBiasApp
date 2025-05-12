@@ -23,8 +23,8 @@ import Queries from './components/Queries'
 import ParticipantDetail from './components/ParticipantDetail'
 import UserDetails from './components/UserDetails'
 
-// const url = 'http://localhost:3001/api'
-const url = 'https://revistedtarotbiasapp.onrender.com/api'
+const url = 'http://localhost:3001/api'
+// const url = 'https://revistedtarotbiasapp.onrender.com/api'
 
 const App = () => {
   const [user, setUser] = useState(null)

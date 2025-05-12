@@ -8,7 +8,9 @@ const Queries = ({ user, url }) => {
   const [showAll, setShowAll] = useState(false)
 
   const fetchQueries = async () => {
-    if (!user?.id) {
+    // το πρόβλημα είναι οτι οταν ερχομαι σε αυτή τη σελιδα απο user login παιρνει το Id απο το token. ενώ όταν έρχομαι απο το admin pannel οχι
+    const uid = user?.id || user?._id
+    if (!uid) {
       setLoading(false)
       return
     }
@@ -16,19 +18,34 @@ const Queries = ({ user, url }) => {
       // const userId = user._id
       const token = localStorage.getItem("token")
       const res = await axios.get(
-        `${url}/query/${user.id}`,
+        `${url}/query/${uid}`,
         { headers: { Authorization: `Bearer ${token}` } }
       )
       setQueries(res.data)
       setLoading(false);
     } catch (err) {
       console.error("Failed to fetch user queries:", err);
+      setLoading(false)
     }
   }
 
-  useEffect (() => {
-    fetchQueries()    
-  }, [])
+useEffect(() => {
+  // whenever we get a fresh user (with either .id or ._id), re‐fetch
+  if (user?.id || user?._id) {
+    console.log('Queries sees user:', user)
+    fetchQueries()
+  }
+}, [user])
+  // useEffect (() => {
+  //   console.log('From queries user', user);    
+  //   fetchQueries()    
+  // }, [user])
+  // useEffect(() => {
+  //   if (user && user._id) {
+  //     fetchQueries()
+  //   }
+  // }, [user])
+
 
   const markImportant = async (queryId) => {
     try {

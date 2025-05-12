@@ -15,9 +15,17 @@ const UserDetail = ({ url }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      const user = response.data
-      setUser(user)
-      return user
+      const userData = response.data
+      console.log('from userdetail user data',userData);
+
+      // setUser(userData)
+      setUser({
+        ...userData,
+        id: userData._id
+      })
+      console.log('user with right id:', user);
+      
+
     } catch (error) {
       console.error("Error fetching user:", error);
     }
@@ -35,10 +43,10 @@ const UserDetail = ({ url }) => {
     <div>
       <h4>User Detail for ID: {id}</h4>
       {/* Fetch and display user details here */}
-      <Queries 
-        user={user}
-        url={url}
-      />
+      {user 
+        ? <Queries user={user} url={url} />
+        : <p>Loading user…</p>
+      }
     </div>
   );
 };
