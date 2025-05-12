@@ -31,10 +31,10 @@ const { verifyToken, checkRole } = require('../middlewares/verification.middlewa
  *                   type: boolean
  *                 data:
  *                   type: array
- *                items:
- *                type: string
- *                format: objectId
- *                example: []
+ *                   items:
+ *                     type: string
+ *                     format: objectId
+ *                     example: []
  *       401:
  *         description: Unauthorized
  *       403:
