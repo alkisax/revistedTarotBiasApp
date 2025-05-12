@@ -5596,7 +5596,7 @@ module.exports = router;
 ```
 
 ---
-# front end users
+# back end corrections
 
 #### chagne to middleware, user dao and tarot.controller δυσκολο προβλημα
 ```js
@@ -5722,6 +5722,555 @@ module.exports = populateUser;
 ```
 
 
+# front end users
+#### App.jsx
+```jsx
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    const roles = JSON.parse(localStorage.getItem("roles"))
+    const adminFromStorage = JSON.parse(localStorage.getItem("admin"))
+    // added
+    const userFromStorage = JSON.parse(localStorage.getItem("user"));
+    if (token && roles) {
+      if (adminFromStorage && roles.includes("admin")) {
+        setAdmin({ token, roles });
+        setUserIsAdmin(true);
+      } else if (userFromStorage) {
+        setUser(userFromStorage);
+        setUserIsAdmin(roles.includes("admin"));
+      }
+    }
+  }, [])
+
+  const handleUserLogin = async (event) => {
+    event.preventDefault()
+    console.log("Submitting login...")
+
+    try {
+      const response = await axios.post(`${url}/userAuth/login`, {
+        "username": username,
+        "password": password
+      })
+      console.log("Login successful", response.data)
+      const { token, user } = response.data.data
+      setUser(user)
+      localStorage.setItem("token", token)
+      localStorage.setItem("roles", JSON.stringify(user.roles))
+      localStorage.setItem("user", JSON.stringify(user))
+
+      const isAdmin = user.roles.includes("admin")
+      setUserIsAdmin(isAdmin)
+      console.log("Is admin?", isAdmin)
+
+    } catch (error) {
+      console.log(error)     
+    }
+    navigate("/")
+  }
+
+  const handleLogout = async () => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("roles");
+    localStorage.removeItem("admin");
+    localStorage.removeItem("user")
+    setAdmin(null)
+    setUserIsAdmin(false)
+    setUser(null)
+    console.log("Logged out successfully")
+    navigate("/")
+  }
+
+  const handleDeleteUser = async (userId) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this user?")
+    if (!isConfirmed) {
+      console.log("User deletion cancelled");
+      return; // Exit the function if the user cancels
+    }
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.delete(`${url}/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      console.log("User deleted", response.data);
+      alert('User deleted successfully!')
+
+      setUsers(users.filter(user => user._id !== userId)); // αυτο προστεθηκε γιατι δεν πρεπει να κανεις ανανεωση της σελιδας σε single page app
+
+    } catch (error) {
+      console.error("Failed to delete user", error.response?.data || error.message);
+    }
+  }
+
+  //[...]
+          <Route path="/userlogin" element={
+          <>
+            <UserLoginForm 
+              username={username}
+              password={password}
+              setUsername={setUsername}
+              setPassword={setPassword}
+              handleUserLogin={handleUserLogin}
+              url={url}
+            />
+          </>
+        } />
+
+          <Route path="/signup" element={
+          <UserSignup 
+            username={username}
+            password={password}
+            setUsername={setUsername}
+            setPassword={setPassword}
+            url={url}
+            setUsers={setUsers}
+          />
+        }>
+        </Route>
+
+        <Route path="/queries" element={
+          <Queries
+            user={user}
+            url={url}
+          />
+        }>
+        </Route>
+
+        <Route path="/participant/:id" element={<ParticipantDetail />} />
+
+        <Route path="/user/:id" element={<UserDetails url={url} />} />
+
+```
+
+#### AppBar.jsx
+```jsx
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto">
+
+          <Nav.Link as={Link} to="/" style={padding}>
+            Home
+          </Nav.Link>
+
+          <Nav.Link as={Link} to="/buymeacoffee" style={padding}>
+            Buy me a coffee
+          </Nav.Link>
+
+          {admin ? (
+            <div className="d-flex flex-column align-items-start ml-auto" style={{ padding }}>
+              <em style={{ paddingRight: 10 }}>{admin.token ? 'Admin logged in' : 'Logged in'}</em>
+              <Nav.Link as={Link} to="/admin" style={padding}>
+                Admin Pannel
+              </Nav.Link>
+              <Button variant="outline-light" size="sm" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <Nav.Link as={Link} to="/login" style={padding}>
+              Admin Login
+            </Nav.Link>
+          )}
+
+          {user ? (
+            <div className="d-flex flex-column align-items-start ml-auto" style={{ padding }}>
+              <em style={{ paddingRight: 10 }}>{user.token ? 'User logged in' : 'Logged in'}</em>
+              <Nav.Link as={Link} to="/queries" style={padding}>
+                User queries
+              </Nav.Link>
+              <Button variant="outline-light" size="sm" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <>
+            <Nav.Link as={Link} to="/userLogin" style={padding}>
+              User Login
+            </Nav.Link>
+            <Nav.Link as={Link} to="/signUp" style={padding}>
+              Sign up
+            </Nav.Link>
+            </>
+          )}
+
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+```
+
+#### UserLoginForm.jsx
+```jsx
+
+const LoginForm = ({ username, password, setUsername, setPassword, handleUserLogin, url }) =>{
+
+  // const googleUrl = 'https://accounts.google.com/o/oauth2/auth?client_id=37391548646-a2tj5o8cnvula4l29p8lodkmvu44sirh.apps.googleusercontent.com&redirect_uri=http://localhost:3000/api/login/google/callback&response_type=code&scope=email%20profile&access_type=offline'
+  const googleUrl = `https://accounts.google.com/o/oauth2/auth?client_id=37391548646-a2tj5o8cnvula4l29p8lodkmvu44sirh.apps.googleusercontent.com&redirect_uri=${url}/login/google/callback&response_type=code&scope=email%20profile&access_type=offline`;
+
+  return (
+    <>
+      <form onSubmit={handleUserLogin}>
+        <div>
+          username
+          <input type="text"
+          id="username"
+          value={username}
+          name="username"
+          onChange={({target}) => setUsername(target.value)}
+          autoComplete="username"
+          />
+        </div>
+        <div>
+          password
+          <input type="text"
+          id="password"
+          value={password}
+          name="password"
+          onChange={({target}) => setPassword(target.value)}
+          autoComplete="password"
+          />
+        </div>
+        <button id="loginBtn" type="submit">login</button>
+      </form>
+
+      <a href={googleUrl}>
+        <button id="GoogleLoginBtn" type="button">Login with Google</button>
+      </a>
+    </>
+  )
+}
+export default LoginForm
+```
+
+#### UserSignup.jsx
+```jsx
+import axios from 'axios'
+import {useNavigate} from 'react-router-dom'
+
+const UserSignup = ({ username, password, setUsername, setPassword, url,  setUsers }) => {
+
+  const navigate = useNavigate()
+
+  const handleUserSignup = async (event) => {
+    event.preventDefault()
+    
+    try {
+      const newUser = {
+        "username": username,
+        "password": password
+      }
+
+      const response = await axios.post(`${url}/user`, newUser)
+
+      console.log('✅ user created:', response.data)
+      alert('User created successfully!')
+
+      // Clear the form if needed
+      setUsername('')
+      setPassword('')
+
+      // αυτη η μορφή ανανέωσης του state είναι σωστή γιατή μου κάνει refresh την σελίδα
+      setUsers(current => [...current, response.data]); // Take the current state (users) and add the new user (response.data) to the end of the array
+
+      navigate("/")
+    } catch (error) {
+      console.error('Error creating participant:', error)
+    }
+  }
+
+  return (
+    <>
+      <form onSubmit={handleUserSignup}>
+        <div>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            required
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+          />
+        </div>
+        <button type="submit">Sign Up</button>
+      </form>
+    </>
+  )
+}
+
+export default UserSignup
+```
+
+#### Queries.jsx
+```jsx
+import { useState, useEffect } from "react"
+import { Button, Table } from 'react-bootstrap';
+import axios from 'axios'
+
+const Queries = ({ user, url }) => {
+  const [queries, setQueries ] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [showAll, setShowAll] = useState(false)
+
+  const fetchQueries = async () => {
+    // το πρόβλημα είναι οτι οταν ερχομαι σε αυτή τη σελιδα απο user login παιρνει το Id απο το token. ενώ όταν έρχομαι απο το admin pannel οχι
+    const uid = user?.id || user?._id
+    if (!uid) {
+      setLoading(false)
+      return
+    }
+    try {  
+      // const userId = user._id
+      const token = localStorage.getItem("token")
+      const res = await axios.get(
+        `${url}/query/${uid}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setQueries(res.data)
+      setLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch user queries:", err);
+      setLoading(false)
+    }
+  }
+
+useEffect(() => {
+  // whenever we get a fresh user (with either .id or ._id), re‐fetch
+  if (user?.id || user?._id) {
+    console.log('Queries sees user:', user)
+    fetchQueries()
+  }
+}, [user])
+  // useEffect (() => {
+  //   console.log('From queries user', user);    
+  //   fetchQueries()    
+  // }, [user])
+  // useEffect(() => {
+  //   if (user && user._id) {
+  //     fetchQueries()
+  //   }
+  // }, [user])
+
+
+  const markImportant = async (queryId) => {
+    try {
+    const token = localStorage.getItem("token")
+    await axios.patch(
+      `${url}/query/${queryId}/important`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    fetchQueries()
+    } catch (error) {
+      console.error("Error fetching queries:", error)
+    }
+  }
+
+  const deleteQuery = async (queryId) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this query?")
+    if (!isConfirmed) {
+      console.log("Query deletion cancelled");
+      return; // Exit the function if the user cancels
+    }
+    try {
+      const token = localStorage.getItem("token")
+      await axios.delete(
+        `${url}/query/${queryId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      fetchQueries()
+    } catch (error) {
+      console.error("Error fetching queries:", error)
+    }
+  }
+
+  const toggleShowAll = () => {
+    setShowAll(!showAll)
+  }
+
+  return (
+    <>
+      {loading && <p>Loading...</p>}
+
+      {!loading && queries.length === 0 && <p>No queries found</p>}
+
+      <Button variant="info" onClick={toggleShowAll} className="mb-3">
+        {showAll ?  "Show only important" : "Show all queries"}
+      </Button>
+
+      {!loading && Array.isArray(queries) && queries.length > 0 && (
+        <div className="table-responsive">
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th className="d-none d-md-table-cell">Bias</th>
+                <th>Response</th>
+                <th className="d-none d-md-table-cell">Important</th>
+                <th className="d-none d-md-table-cell">Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {queries
+                .filter((q) => showAll || q.important)
+                .map((query) => (
+                  <tr key={query._id}>
+                    <td>{query.question || 'No question'}</td>
+                    <td className="d-none d-md-table-cell">{query.bias || 'N/A'}</td>
+                    <td>{query.response || 'Pending...'}</td>
+                    <td className="d-none d-md-table-cell">
+                      {query.important ? 'Yes' : 'No'}
+                    </td>
+                    <td className="d-none d-md-table-cell">
+                      {new Date(query.createdAt).toLocaleString()}
+                    </td>
+                    <td>
+                      <Button
+                        variant={query.important ? 'warning' : 'success'}
+                        onClick={() => markImportant(query._id)}
+                      >
+                        {query.important ? 'Unmark' : 'Mark Important'}
+                      </Button>
+                      <Button
+                        className="mt-2"
+                        variant="danger"
+                        onClick={() => deleteQuery(query._id)}
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </div>
+      )}
+    </>
+  )
+}
+export default Queries
+```
+
+#### AdminPanel.jsx ++
+```jsx
+      <button onClick={() => setShowUsers(!showUsers)} className="btn btn-primary">
+        {showUsers && 'Hide Users'}
+        {!showUsers && 'Show users'}
+      </button>
+
+      <UsersList
+        loading={loading}
+        users={users}
+        handleDeleteUser={handleDeleteUser}
+        showUsers={showUsers}
+        setUsers={setUsers}
+        url={url}
+      />
+```
+
+#### UserList.jsx
+```jsx
+import { Link } from "react-router-dom"
+import NewParticipantForm from './NewParticipantForm'
+
+const UsersList = ({ loading, users, handleDeleteUser, showUsers}) => {
+
+  return (
+    <>
+      {showUsers && (
+        <>
+          {loading && <p>Loading...</p>}
+          
+          {!loading && users.length === 0 && <p>No users found</p>}
+  
+          <ul>
+            {!loading && users.length !== 0 &&
+              users.map((user) => (
+                <li key={user._id || `${user.username}`}>
+                  <Link to={`/user/${user._id}`}>
+                    {user.username}
+                  </Link>
+                  <button id={`${user.username}Btn`} onClick={() => handleDeleteUser(user._id)}>Delete</button>
+                </li>
+              ))
+            }
+          </ul>
+        </>
+      )}
+    </>
+  )
+}
+
+export default UsersList
+```
+
+#### UserDetails.jsx
+```jsx
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Queries from './Queries';
+
+const UserDetail = ({ url }) => {
+  const [user, setUser] = useState(null)
+  const { id } = useParams();  
+
+  const fetchUserById = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${url}/user/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userData = response.data
+      console.log('from userdetail user data',userData);
+
+      // setUser(userData)
+      setUser({
+        ...userData,
+        id: userData._id
+      })
+      console.log('user with right id:', user);
+      
+
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchUserById();
+    };
+    fetchData();
+  }, [id, url]); 
+
+
+  return (
+    <div>
+      <h4>User Detail for ID: {id}</h4>
+      {/* Fetch and display user details here */}
+      {user 
+        ? <Queries user={user} url={url} />
+        : <p>Loading user…</p>
+      }
+    </div>
+  );
+};
+
+export default UserDetail;
+```
 
 
 

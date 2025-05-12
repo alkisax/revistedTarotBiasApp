@@ -28,6 +28,11 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
   - Viewing donators.
   - Adding new donators.
   - Viewing donation details.
+  - Viewing users and their queris
+
+### 3. **user archive of queries**
+- Mark important
+**Showcase of crud functionality. can create query, read it, alter it and delete it**
 
 ### 3. **Donation Management**
 - Admins can mark donations as processed with a button.
@@ -120,6 +125,10 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
   1. Log in as an admin to access the admin panel.
   2. View, add, or delete donators.
   3. Mark donations as processed and send thank-you emails.
+- user queries panel
+  1. view user queries
+  2. delete one
+  3. mark important
 
 ## API Documentation
   * Access the Swagger API documentation at ```/api-docs.```
@@ -154,6 +163,9 @@ root/
 │   ├── auth.controller.js
 │   ├── email.controller.js
 │   ├── participant.controller.js
+│   ├── query.controller.js
+│   ├── user.controller.js
+│   ├── userAuth.controller.js
 │   ├── stripe.controller.js
 │   ├── tarot.controller.js
 │   ├── transactionController.js
@@ -161,22 +173,29 @@ root/
 │   ├── admin.dao.js
 │   ├── participant.dao.js
 │   ├── transaction.dao.js
+│   ├── query.dao.js
+│   ├── user.dao.js
 ├── dist/
 ├── middlewares/
 │   ├── verification.middleware.js
+│   ├── populateUser.middleware.js
 ├── models/
 │   ├── admins.models.js
 │   ├── participant.models.js
 │   ├── query.models.js
 │   ├── transaction.models.js
+│   ├── user.models.js
 ├── routes/
 │   ├── admin.routes.js
 │   ├── auth.routes.js
 │   ├── email.routes.js
 │   ├── participant.routes.js
+│   ├── query.routes.js
 │   ├── stripe.routes.js
 │   ├── tarot.routes.js
 │   ├── transaction.routes.js
+│   ├── user.routes.js
+│   ├── userAuth.routes.js
 ├── services/
 │   ├── auth.service.js
 │   ├── gpt.service.js
@@ -204,10 +223,15 @@ root/
 │   │   │   ├── Home.jsx
 │   │   │   ├── LoginForm.jsx
 │   │   │   ├── NewParticipantForm.jsx
+│   │   │   ├── ParticipantDetails.jsx
 │   │   │   ├── ParticipantInfoForm.jsx
 │   │   │   ├── Participants.jsx
+│   │   │   ├── Queries.jsx
 │   │   │   ├── Transactions.jsx
 │   │   │   ├── UserDetail.jsx
+│   │   │   ├── UserLoginForm.jsx
+│   │   │   ├── UserSignUp.jsx
+│   │   │   ├── UsersList.jsx
 │   │   ├── services/
 │   │   │   ├── ProtectedRoute.jsx
 │   │   ├── tarot-components/
