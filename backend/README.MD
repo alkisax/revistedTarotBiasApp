@@ -203,37 +203,40 @@ root/
 │   ├── tarot.service.js
 ├── utils/
 │   ├── logger.js
-├── frontend/
+
+
+frontend/
+├── App.jsx
+├── main.jsx
+├── index.html
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── vit.config.js
+├── src/
 │   ├── App.jsx
 │   ├── main.jsx
-│   ├── index.html
-│   ├── .gitignore
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── vit.config.js
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   ├── components/
-│   │   │   ├── AdminLogedInView.jsx
-│   │   │   ├── AdminPanel.jsx
-│   │   │   ├── Apbar.jsx
-│   │   │   ├── Checkout.jsx
-│   │   │   ├── GoogleSuccess.jsx
-│   │   │   ├── Home.jsx
-│   │   │   ├── LoginForm.jsx
-│   │   │   ├── NewParticipantForm.jsx
-│   │   │   ├── ParticipantDetails.jsx
-│   │   │   ├── ParticipantInfoForm.jsx
-│   │   │   ├── Participants.jsx
-│   │   │   ├── Queries.jsx
-│   │   │   ├── Transactions.jsx
-│   │   │   ├── UserDetail.jsx
-│   │   │   ├── UserLoginForm.jsx
-│   │   │   ├── UserSignUp.jsx
-│   │   │   ├── UsersList.jsx
-│   │   ├── services/
-│   │   │   ├── ProtectedRoute.jsx
+│   ├── components/
+│   │   ├── AdminLogedInView.jsx
+│   │   ├── AdminPanel.jsx
+│   │   ├── Apbar.jsx
+│   │   ├── Checkout.jsx
+│   │   ├── GoogleSuccess.jsx
+│   │   ├── Home.jsx
+│   │   ├── LoginForm.jsx
+│   │   ├── NewParticipantForm.jsx
+│   │   ├── ParticipantDetails.jsx
+│   │   ├── ParticipantInfoForm.jsx
+│   │   ├── Participants.jsx
+│   │   ├── Queries.jsx
+│   │   ├── Transactions.jsx
+│   │   ├── UserDetail.jsx
+│   │   ├── UserLoginForm.jsx
+│   │   ├── UserSignUp.jsx
+│   │   ├── UsersList.jsx
+│   │   ├── Instructions.jsx
+│   ├── services/
+│   │   ├── ProtectedRoute.jsx
 │   │   ├── tarot-components/
 │   │   │   ├── CardImagesTemp.jsx
 │   │   │   ├── Deck1.jsx
@@ -242,18 +245,18 @@ root/
 │   │   │   ├── Question.jsx
 │   │   │   ├── Settings.jsx
 │   │   │   ├── TarotHome.jsx
-│   │   ├── assets/
-│   │   │   ├── banner.png
-│   │   │   ├── hansMoneyCrop.jpg
-│   │   │   ├── three_coins.png
-│   │   │   ├── two coins.jpg
-│   ├── public/
-│   │   ├── deck1/
-│   │   │   ├── 0.jpg
-│   │   │   etc...
-│   │   │   ├── 77.jpg
-│   │   ├── images/
-│   │   │   ├── small_Cretan_State.png
-│   │   │   ├── small_Flag_of_Liberia
+│   ├── assets/
+│   │   ├── banner.png
+│   │   ├── hansMoneyCrop.jpg
+│   │   ├── three_coins.png
+│   │   ├── two coins.jpg
+├── public/
+│   ├── deck1/
+│   │   ├── 0.jpg
+│   │   etc...
+│   │   ├── 77.jpg
+│   ├── images/
+│   │   ├── small_Cretan_State.png
+│   │   ├── small_Flag_of_Liberia
 ```
 *this app is a combination of my previous projects BiasedTarotApp, LoginApp, StripeApp*
