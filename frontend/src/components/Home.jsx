@@ -55,7 +55,7 @@ const Home = ({ message, setMessage, url }) => {
 
       <TarotHome />
 
-      <p className="text-center text-secondary small">to create an admin has to be done through backend with postman.
+      {/* <p className="text-center text-secondary small">to create an admin has to be done through backend with postman.
         post revistedtarotbiasapp.onrender.com/api/admin
         {`{
           "username": "newadmin",
@@ -64,7 +64,7 @@ const Home = ({ message, setMessage, url }) => {
           "password": "password123", 
           "roles": ["admin"] 
         }`}
-        </p>
+        </p> */}
       {/* <Checkout /> */}
     </>
   )

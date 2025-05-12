@@ -18,6 +18,10 @@ const Appbar = ({ admin, handleLogout, user }) => {
             Home
           </Nav.Link>
 
+          <Nav.Link as={Link} to="/insturctions" style={padding}>
+            insturctions
+          </Nav.Link>
+
           <Nav.Link as={Link} to="/buymeacoffee" style={padding}>
             Buy me a coffee
           </Nav.Link>

@@ -6272,6 +6272,26 @@ const UserDetail = ({ url }) => {
 export default UserDetail;
 ```
 
+# instructions
+#### App.jsx
+```jsx
+import Instructions from './components/Instructions'
+
+        <Route path="/insturctions" element={<Instructions 
+        />} />
+```
+#### AppBar.jsx
+```jsx
+          <Nav.Link as={Link} to="/insturctions" style={padding}>
+            insturctions
+          </Nav.Link>
+```
+
+#### Instructions.jsx
+```jsx
+
+```
+
 
 
 

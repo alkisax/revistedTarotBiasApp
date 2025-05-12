@@ -22,6 +22,7 @@ import UserSignup from './components/userSignup'
 import Queries from './components/Queries'
 import ParticipantDetail from './components/ParticipantDetail'
 import UserDetails from './components/UserDetails'
+import Instructions from './components/Instructions'
 
 // const url = 'http://localhost:3001/api'
 const url = 'https://revistedtarotbiasapp.onrender.com/api'
@@ -306,6 +307,10 @@ const App = () => {
         <Route path="/participant/:id" element={<ParticipantDetail />} />
 
         <Route path="/user/:id" element={<UserDetails url={url} />} />
+
+        <Route path="/insturctions" element={<Instructions 
+        />} />
+
       </Routes>
     </div>
   )
