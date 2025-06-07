@@ -142,10 +142,11 @@ This project is a full-stack application built using the **MERN stack** (MongoDB
 ## file tree
 ```
 root/
+├── README.MD
+backend/
 ├── .env
 ├── .gitignore
 ├── instructions.md
-├── README.MD
 ├── package.json
 ├── package-lock.json
 ├── app.js
