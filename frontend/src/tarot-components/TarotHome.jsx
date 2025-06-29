@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import CardImages from "./CardImagesTemp";
 import axios from "axios";
@@ -59,6 +58,7 @@ const TarotHome = () => {
     };
   
     fetchTarotReading();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [question, bias, lang]);
 
   useEffect(() => {
@@ -197,7 +197,7 @@ const TarotHome = () => {
 
         <img src={banner} alt="banner" className="img-fluid w-50" />
 
-        <p className="w-50">“When I am furious about something, I sometimes beat the ground or a tree with my walking stick. But I certainly do not believe that the ground is to blame or that my beating can help anything... And all rites are of this kind.”
+        <p className="w-50">“When I am furious about something, I sometimes beat the ground or a tree with my walking stick. But I certainly do not believe that the ground is to blame or that my beating can help anything... And all rites are of this kind!”
         ― Ludwig Wittgenstein, Remarks on Frazer's Golden Bough</p>
 
         <div>

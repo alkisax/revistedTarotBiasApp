@@ -35,16 +35,8 @@ useEffect(() => {
     console.log('Queries sees user:', user)
     fetchQueries()
   }
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [user])
-  // useEffect (() => {
-  //   console.log('From queries user', user);    
-  //   fetchQueries()    
-  // }, [user])
-  // useEffect(() => {
-  //   if (user && user._id) {
-  //     fetchQueries()
-  //   }
-  // }, [user])
 
 
   const markImportant = async (queryId) => {
