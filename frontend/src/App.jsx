@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+// /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import {
@@ -132,10 +132,10 @@ const App = () => {
     navigate("/")
   }
 
-  const handleAdminBtn = () => {
-    console.log("Admin Btn clicked, is admin:", userIsAdmin)
-    navigate("/admin")   
-  }
+  // const handleAdminBtn = () => {
+  //   console.log("Admin Btn clicked, is admin:", userIsAdmin)
+  //   navigate("/admin")   
+  // }
 
   const handleDeleteParticipant = async (participantId) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this participant?")
@@ -184,6 +184,8 @@ const App = () => {
       console.error("Failed to delete user", error.response?.data || error.message);
     }
   }
+
+  console.log("user is admin? ", userIsAdmin)
 
   return (
 <div className="bg-dark text-light d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '100vh', position: 'relative' }}>
@@ -249,7 +251,7 @@ const App = () => {
         } />  
 
         <Route path="/google-success" element={
-          <GoogleSuccess setAdmin={setAdmin} setIsAdmin={setIsAdmin} />
+          <GoogleSuccess setAdmin={setAdmin} setIsAdmin={setIsAdmin} isAdmin={isAdmin} />
         } />
 
         <Route path="/login" element={
@@ -301,7 +303,7 @@ const App = () => {
         <Route path='/buymeacoffee' element={
           // <Checkout />
           <Participantinfoform 
-            // newParticipant={newParticipant}
+            newParticipant={newParticipant}
             setNewParticipant={setNewParticipant}
           />
         } />
