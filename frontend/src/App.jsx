@@ -24,8 +24,8 @@ import ParticipantDetail from './components/ParticipantDetail'
 import UserDetails from './components/UserDetails'
 import Instructions from './components/Instructions'
 
-const url = 'http://localhost:3001/api'
-// const url = 'https://revistedtarotbiasapp.onrender.com/api'
+// const url = 'http://localhost:3001/api'
+const url = 'https://revistedtarotbiasapp.onrender.com/api'
 
 const App = () => {
   const [user, setUser] = useState(null)
