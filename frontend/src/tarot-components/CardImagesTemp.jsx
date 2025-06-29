@@ -1,4 +1,3 @@
-// import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is imported
 
 const TarotCard = ({ position, cardName, mapCardToImage }) => (
   <div className="col-3 text-center">

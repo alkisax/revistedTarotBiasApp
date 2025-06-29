@@ -8,11 +8,6 @@ import threeCoins from '../assets/three_coins.svg.png'
 // added to stripe boilerplate to extract new participant info from url
 import { useSearchParams } from 'react-router-dom'
 
-// τα αφήνω ως σχόλιο. άλλωστε είναι δημόσια κλειδιά. σε κανονική έκδοση θα είχαν αφαιρεθεί
-// const PUBLIC_STRIPE_KEY = 'pk_live_51REuM3EsaPshQGwVZxSzQyBw2SJj4CnnSxuf6yWokbg5dRVAM0WpDFrIHnlF0sqQgykl4WVxCw5gA6bhDHWeyrFE00muoS3dkU'
-// const PRICE_ID_050 = 'price_1RGPe4EsaPshQGwV6vXbMrhE' // 0,5 ευρω
-// const PRICE_ID_1E = 'price_1RLfbEEsaPshQGwV2HETNB56' // 1 ευρώ
-// const PRICE_ID_2E = 'price_1RLfg9EsaPshQGwVxwhsXPnL' // 2 ευρώ
 const PUBLIC_STRIPE_KEY = import.meta.env.VITE_PUBLIC_STRIPE_KEY
 const PRICE_ID_050 = import.meta.env.VITE_PRICE_ID_050 // 0,5 ευρω
 const PRICE_ID_1E = import.meta.env.VITE_PRICE_ID_1E // 1 ευρώ
@@ -21,9 +16,6 @@ const BACKEND_URL = 'http://localhost:3001';
 // const BACKEND_URL = 'https://revistedtarotbiasapp.onrender.com';
 console.log("Stripe key:", PUBLIC_STRIPE_KEY)
 console.log("Price IDs:", PRICE_ID_050, PRICE_ID_1E, PRICE_ID_2E)
-
-// const PRICE_ID_051 = 'price_1RGkyMEsaPshQGwV7rsnw60y'// 0,51 ευρω
-// const PRICE_ID_052 = 'price_1RGlWzEsaPshQGwVGwpZ9TSb' // 0,52 ευρω
 
 const stripePromise = loadStripe(`${PUBLIC_STRIPE_KEY}`)
 
@@ -52,18 +44,6 @@ const Checkout = () => {
       console.log(error)
     }
   }
-
-    // const handleCheckout = async (price_id) => {
-    //   try {
-    //     const response = await axios.post(`${BACKEND_URL}/api/stripe/checkout/${price_id}`)
-    //     const { id } = response.data
-    
-    //     const stripe = await stripePromise
-    //     await stripe.redirectToCheckout({ sessionId: id })
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
 
   return (
     <div className="container mt-5" style={{ backgroundColor: '#242424', color: 'white' }}>

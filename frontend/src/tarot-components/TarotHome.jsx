@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import CardImages from "./CardImagesTemp";
 import axios from "axios";
@@ -59,6 +58,7 @@ const TarotHome = () => {
     };
   
     fetchTarotReading();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [question, bias, lang]);
 
   useEffect(() => {

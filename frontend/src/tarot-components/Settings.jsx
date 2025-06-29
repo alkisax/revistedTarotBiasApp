@@ -1,4 +1,3 @@
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import InnerSettings from "./InnerSettings";
 import { useState } from "react";
 

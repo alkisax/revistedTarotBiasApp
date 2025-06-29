@@ -132,11 +132,6 @@ const App = () => {
     navigate("/")
   }
 
-  // const handleAdminBtn = () => {
-  //   console.log("Admin Btn clicked, is admin:", userIsAdmin)
-  //   navigate("/admin")   
-  // }
-
   const handleDeleteParticipant = async (participantId) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this participant?")
     if (!isConfirmed) {

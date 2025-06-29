@@ -19,10 +19,6 @@ const Participants = ({ loading, participants, handleDeleteParticipant, showPart
             {!loading && participants.length !== 0 &&
               participants.map((participant) => (
                 <li key={participant._id || `${participant.name}-${participant.email}`}>
-                  {/* // αν κάνεις κλικ σε έναν καταθέτη σε οδηγη σε δικιά του σελίδα 
-                  // στο App.jsx έχει:
-                  // <Route path="/users" element={<AdminPanel handleDeleteUser={handleDeleteParticipant} url={url} />} />
-                  // <Route path="/users/:id" element={<UserDetail />} /> */}
                   <Link to={`/participant/${participant._id}`}>
                     {participant.email}
                   </Link>

@@ -1,8 +1,6 @@
-// /* eslint-disable no-unused-vars */
 import {useState} from 'react'
 import axios from 'axios'
 
-// const NewParticipantForm = ({ url, participants, setParticipants }) =>{
   const NewParticipantForm = ({ url, setParticipants }) =>{
   const [surname, setSurname] = useState('')
   const [name, setName] = useState('')
