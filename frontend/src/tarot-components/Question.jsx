@@ -1,4 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 const Question = ({ newQuestion, handleQuestionChange, addquestion }) => {
   return (
     <div className="mb-4">

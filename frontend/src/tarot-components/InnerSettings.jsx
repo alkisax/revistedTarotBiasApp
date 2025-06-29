@@ -1,5 +1,5 @@
 import { useState } from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 const InnerSettings = ({ setBias }) => {
   const [newBias, setNewBias] = useState('the answer will include the topic');
