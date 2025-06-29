@@ -19,7 +19,8 @@ const LoginForm = ({ username, password, setUsername, setPassword, handleLogin, 
         </div>
         <div>
           password
-          <input type="text"
+          <input 
+          type="password"
           id="password"
           value={password}
           name="password"

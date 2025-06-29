@@ -24,8 +24,8 @@ import ParticipantDetail from './components/ParticipantDetail'
 import UserDetails from './components/UserDetails'
 import Instructions from './components/Instructions'
 
-// const url = 'http://localhost:3001/api'
-const url = 'https://revistedtarotbiasapp.onrender.com/api'
+const url = 'http://localhost:3001/api'
+// const url = 'https://revistedtarotbiasapp.onrender.com/api'
 
 const App = () => {
   const [user, setUser] = useState(null)
@@ -79,8 +79,13 @@ const App = () => {
       setUserIsAdmin(isAdmin)
       console.log("Is admin?", isAdmin)
 
+      setMessage('')
     } catch (error) {
-      console.log(error)     
+      console.log(error)
+      setMessage('Login failed: Invalid username or password')
+      setTimeout(() => {
+        setMessage('');
+      }, 7000); 
     }
     navigate("/")
   }
@@ -104,9 +109,13 @@ const App = () => {
       const isAdmin = user.roles.includes("admin")
       setUserIsAdmin(isAdmin)
       console.log("Is admin?", isAdmin)
-
+      setMessage('')
     } catch (error) {
-      console.log(error)     
+      console.log(error)
+      setMessage('User Login failed: Invalid username or password') 
+      setTimeout(() => {
+        setMessage('');
+      }, 7000);    
     }
     navigate("/")
   }
