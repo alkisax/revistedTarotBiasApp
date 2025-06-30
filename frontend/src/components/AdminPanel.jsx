@@ -47,8 +47,7 @@ const AdminPanel = ({url, handleDeleteParticipant, handleDeleteUser, users, setU
     
     fetchUsers()
     fetchParticipants();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
+  }, [url, setUsers, setParticipants, setLoading]);
 
   return (
     <div>

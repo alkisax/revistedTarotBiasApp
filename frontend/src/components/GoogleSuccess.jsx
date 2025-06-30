@@ -39,8 +39,7 @@ const GoogleSuccess = ({ setAdmin, setIsAdmin}) => {
       console.log("login failed");      
       navigate('/login');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate, setAdmin, setIsAdmin]);
 
   return <div>Logging you in via Google...</div>;
 };

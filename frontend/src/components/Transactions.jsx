@@ -1,4 +1,3 @@
-// /* eslint-disable react-hooks/exhaustive-deps */
 // αυτό είναι ένα συμαντικό component. Μου δείχνει τι τραπεζικές συναλαγές έχουν γίνει και αν αυτές έχουν επεξεργαστεί. Με ένα κουμπι κάνω toggle την επεξεργασία τους. Στο backend η επεξεργασία του transaction αυτομάτος κάνει trigger την αποστολή email με nodemailer
 
 import axios from 'axios'
