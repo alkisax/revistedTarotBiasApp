@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-// /* eslint-disable no-unused-vars */
-=======
->>>>>>> main
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import {
