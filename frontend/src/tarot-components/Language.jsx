@@ -25,7 +25,7 @@ const Language = ({ lang, setLang }) => {
           onChange={handleLangChange}
           checked={selectedLang === 'en'}
         />
-        <label htmlFor="en" className="form-check-label"><img src="/images/small_Flag_of_Liberia.png" style={{ height: '1em', marginRight: '8px' }} />english </label>
+        <label htmlFor="en" className="form-check-label"><img src="/biased-tarot/images/small_Flag_of_Liberia.png" style={{ height: '1em', marginRight: '8px' }} />english </label>
       </div>
 
       <div className="form-check form-check-inline" >
@@ -37,7 +37,7 @@ const Language = ({ lang, setLang }) => {
           onChange={handleLangChange}
           checked={selectedLang === 'gr'}
         />
-        <label htmlFor="gr" className="form-check-label"><img src="/images/small_Cretan_State.png" style={{ height: '1em', marginRight: '8px' }} />greek</label>
+        <label htmlFor="gr" className="form-check-label"><img src="/biased-tarot/images/small_Cretan_State.png" style={{ height: '1em', marginRight: '8px' }} />greek</label>
       </div> 
     </div>
   )
