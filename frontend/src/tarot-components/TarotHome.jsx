@@ -157,8 +157,8 @@ const TarotHome = () => {
   
     const index = cardNameToIndex[cardName];
     return index !== undefined
-      ? `/deck1/${index}.jpg`
-      : '/deck1/default.jpg'; // fallback image
+      ? `/biased-tarot/deck1/${index}.jpg`
+      : '/biased-tarot/deck1/default.jpg'; // fallback image
   };
   
 
