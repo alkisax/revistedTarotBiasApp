@@ -2,8 +2,8 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const app = require('./app'); // import the Express app from app.js
 
-// const PORT = process.env.BACK_END_PORT || 3001
-const PORT = 3001
+const PORT = process.env.BACK_END_PORT || 3011
+// const PORT = 3001
 
 
 mongoose.set('strictQuery', false);
