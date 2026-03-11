@@ -24,7 +24,8 @@ import UserDetails from './components/UserDetails'
 import Instructions from './components/Instructions'
 
 // const url = 'http://localhost:3001/api'
-const url = 'https://revistedtarotbiasapp.onrender.com/api'
+// const url = 'https://revistedtarotbiasapp.onrender.com/api'
+const url = '/biased-tarot/api'
 
 const App = () => {
   const [user, setUser] = useState(null)

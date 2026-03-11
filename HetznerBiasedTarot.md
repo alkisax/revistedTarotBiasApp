@@ -37,7 +37,7 @@ systemctl reload nginx
 ```
 
 ```bash
-cd /var/www/biased-tarot && git pull origin main && cd frontend && npm install --legacy-peer-deps && npm run build && cd ../backend && npm install && pm2 restart biased-tarot
+cd /var/www/biased-tarot && git pull origin main && cd frontend && npm install --legacy-peer-deps && npm run build && cd ../backend && npm install && pm2 restart biased-tarot && sleep 2 && curl -s https://portfolio-projects.space/biased-tarot/ | head -n 5 && echo "✓ biased-tarot deploy OK"
 ```
 
 

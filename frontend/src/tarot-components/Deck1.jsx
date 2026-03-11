@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 // Function to map card index to image path
 const mapCardToImage = (cardIndex) => {
-  return `/deck1/${cardIndex}.jpg`; // Path to the image using the card index
+  return `/biased-tarot/deck1/${cardIndex}.jpg`; // Path to the image using the card index
 };
 
 const Deck1btn = () => {
