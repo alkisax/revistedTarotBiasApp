@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import {
-  BrowserRouter as Router,
-  Routes, Route, Link, useNavigate
+  // BrowserRouter as Router,
+  Routes, Route, useNavigate
 } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 import Checkout from './components/Checkout'
 import GoogleSuccess from './components/GoogleSuccess'
 import LoginForm from './components/LoginForm'
-import AdminLogedInView from './components/AdminLogedInView'
+// import AdminLogedInView from './components/AdminLogedInView'
 import AdminPanel from './components/AdminPanel'
 import ProtectedRoute from './services/ProtectedRoute'
-import UserDetail from './components/ParticipantDetail'
+// import UserDetail from './components/ParticipantDetail'
 import Appbar from './components/Appbar'
 import Home from './components/Home'
-import Participantinfoform from './components/ParticipantInfoForm'
+import ParticipantInfoform from './components/ParticipantInfoForm'
 import Deck1 from './tarot-components/Deck1'
 import UserLoginForm from './components/UserLoginForm'
-import UserSignup from './components/userSignup'
+import UserSignup from './components/UserSignup'
 import Queries from './components/Queries'
 import ParticipantDetail from './components/ParticipantDetail'
 import UserDetails from './components/UserDetails'
@@ -296,7 +296,7 @@ const App = () => {
 
         <Route path='/buymeacoffee' element={
           // <Checkout />
-          <Participantinfoform 
+          <ParticipantInfoform 
             newParticipant={newParticipant}
             setNewParticipant={setNewParticipant}
           />
