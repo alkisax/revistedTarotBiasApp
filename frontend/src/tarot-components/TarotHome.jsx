@@ -24,7 +24,8 @@ const TarotHome = () => {
   const [ lang, setLang ] = useState('en')
 
   // const tarotUrl = "http://localhost:3001/api/tarot/tarot-reading"
-  const tarotUrl = "https://revistedtarotbiasapp.onrender.com/api/tarot/tarot-reading"
+  // const tarotUrl = "https://revistedtarotbiasapp.onrender.com/api/tarot/tarot-reading"
+  const tarotUrl = "/biased-tarot/api/tarot/tarot-reading";
 
   const navigate = useNavigate()
 

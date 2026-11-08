@@ -20,7 +20,7 @@ const getGPTResponse = async (gpt_prompt, userQuestion, drawnCards, bias, apiKey
   
   try {
     const response = await axios.post(url, {
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: fullPrompt }],
     }, {
       headers: {
